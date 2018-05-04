@@ -1,0 +1,5 @@
+{
+  "test_solution.py::TestDiagonalSudoku::test_solve": true,
+  "test_solution.py::TestNakedTwins::test_naked_twins": true,
+  "test_solution.py::TestNakedTwins::test_naked_twins2": true
+}

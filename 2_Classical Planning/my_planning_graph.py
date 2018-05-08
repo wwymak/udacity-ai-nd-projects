@@ -15,14 +15,18 @@ class ActionLayer(BaseActionLayer):
         --------
         layers.ActionNode
         """
-        node_a = make_node(actionA)
-        node_b = make_node(actionB)
-        effects_a = node_a.effects
-        effects_b = node_b.effects
+        # node_a = make_node(actionA)
+        # node_b = make_node(actionB)
+        # effects_a = node_a.effects
+        # effects_b = node_b.effects
+        effects_a = actionA.effects
+        effects_b = actionB.effects
 
         for x in effects_a:
             for y in effects_b:
                 if x == ~y:
+                    return True
+                elif y == ~x:
                     return True
         return False
 
@@ -34,20 +38,20 @@ class ActionLayer(BaseActionLayer):
         --------
         layers.ActionNode
         """
-        node_a = make_node(actionA)
-        node_b = make_node(actionB)
-        effects_a = node_a.effects
-        effects_b = node_b.effects
-        precond_a = node_a.preconditions
-        precond_b = node_b.preconditions
+        # node_a = make_node(actionA)
+        # node_b = make_node(actionB)
+        # effects_a = node_a.effects
+        # effects_b = node_b.effects
+        # precond_a = node_a.preconditions
+        # precond_b = node_b.preconditions
 
-        for x in effects_a:
-            for y in precond_b:
+        for x in actionA.effects:
+            for y in actionB.preconditions:
                 if x == ~y:
                     return True
 
-        for x in effects_b:
-            for y in precond_a:
+        for x in actionB.effects:
+            for y in actionA.preconditions:
                 if x == ~y:
                     return True
 
@@ -61,11 +65,11 @@ class ActionLayer(BaseActionLayer):
         layers.ActionNode
         layers.BaseLayer.parent_layer
         """
-        node_a = make_node(actionA)
-        node_b = make_node(actionB)
+        # node_a = make_node(actionA)
+        # node_b = make_node(actionB)
 
-        precond_a = node_a.preconditions
-        precond_b = node_b.preconditions
+        precond_a = actionA.preconditions
+        precond_b = actionB.preconditions
 
         for x in precond_a:
             for y in precond_b:
@@ -84,17 +88,22 @@ class LiteralLayer(BaseLiteralLayer):
         --------
         layers.BaseLayer.parent_layer
         """
-        for x in literalA:
-            for y in literalB:
-                if self.parent_layer.is_mutex(x, y):
-                    return True
+        for x in self.parents[literalA]:
+            for y in self.parents[literalB]:
+                if not self.parent_layer.is_mutex(x, y):
+                    return False
+                elif not self.parent_layer.is_mutex(y,x):
+                    return False
 
-        return False
+        return True
 
     def _negation(self, literalA, literalB):
         """ Return True if two literals are negations of each other """
-        # TODO: implement this function
-        raise NotImplementedError
+        if literalA == ~literalB:
+            return True
+        if literalB == ~literalA:
+            return True
+        return False
 
 
 class PlanningGraph:

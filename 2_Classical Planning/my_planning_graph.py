@@ -65,8 +65,6 @@ class ActionLayer(BaseActionLayer):
         layers.ActionNode
         layers.BaseLayer.parent_layer
         """
-        # node_a = make_node(actionA)
-        # node_b = make_node(actionB)
 
         precond_a = actionA.preconditions
         precond_b = actionB.preconditions
@@ -141,6 +139,7 @@ class PlanningGraph:
         self.literal_layers = [layer]
         self.action_layers = []
 
+
     def h_levelsum(self):
         """ Calculate the level sum heuristic for the planning graph
 
@@ -162,7 +161,19 @@ class PlanningGraph:
         Russell-Norvig 10.3.1 (3rd Edition)
         """
         # TODO: implement this function
-        raise NotImplementedError
+        level_sum = 0
+
+        met = False #all goals subset of level
+        while not met or not self._is_leveled:
+            self._extend()
+            if self.goal.issubset(self.literal_layers):
+                met = True
+        for goal in self.goal:
+            for idx, layer in enumerate(self.literal_layers):
+                if goal in layer:
+                    level_sum += idx
+
+        return level_sum
 
     def h_maxlevel(self):
         """ Calculate the max level heuristic for the planning graph

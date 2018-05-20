@@ -15,10 +15,6 @@ class ActionLayer(BaseActionLayer):
         --------
         layers.ActionNode
         """
-        # node_a = make_node(actionA)
-        # node_b = make_node(actionB)
-        # effects_a = node_a.effects
-        # effects_b = node_b.effects
         effects_a = actionA.effects
         effects_b = actionB.effects
 
@@ -38,12 +34,6 @@ class ActionLayer(BaseActionLayer):
         --------
         layers.ActionNode
         """
-        # node_a = make_node(actionA)
-        # node_b = make_node(actionB)
-        # effects_a = node_a.effects
-        # effects_b = node_b.effects
-        # precond_a = node_a.preconditions
-        # precond_b = node_b.preconditions
 
         for x in actionA.effects:
             for y in actionB.preconditions:
@@ -149,31 +139,80 @@ class PlanningGraph:
         that the level cost is **NOT** the minimum number of actions to
         achieve a single goal literal.
         
-        For example, if Goal1 first appears in level 0 of the graph (i.e.,
-        it is satisfied at the root of the planning graph) and Goal2 first
+        For example, if Goal_1 first appears in level 0 of the graph (i.e.,
+        it is satisfied at the root of the planning graph) and Goal_2 first
         appears in level 3, then the levelsum is 0 + 3 = 3.
 
-        Hint: expand the graph one level at a time and accumulate the level
-        cost of each goal.
+        Hints
+        -----
+          - See the pseudocode folder for help on a simple implementation
+          - You can implement this function more efficiently than the
+            sample pseudocode if you expand the graph one level at a time
+            and accumulate the level cost of each goal rather than filling
+            the whole graph at the start.
 
         See Also
         --------
         Russell-Norvig 10.3.1 (3rd Edition)
         """
-        # TODO: implement this function
+        # TODO: implement this function without using fill
         level_sum = 0
 
-        met = False #all goals subset of level
-        while not met or not self._is_leveled:
-            self._extend()
-            if self.goal.issubset(self.literal_layers):
-                met = True
+        # met = False #all goals subset of level
+        # while not met or not self._is_leveled:
+        #     self._extend()
+        #     if self.goal.issubset(self.literal_layers):
+        #         met = True
+        self.fill()
+        done_goals = []
         for goal in self.goal:
             for idx, layer in enumerate(self.literal_layers):
                 if goal in layer:
-                    level_sum += idx
-
+                    if goal not in done_goals:
+                        level_sum += idx
+                        done_goals.append(goal)
         return level_sum
+
+    # THE INEFFICIENT VERSION
+    # def h_maxlevel(self):
+    #     """ Calculate the max level heuristic for the planning graph
+    #
+    #     The max level is the largest level cost of any single goal fluent.
+    #     The "level cost" to achieve any single goal literal is the level at
+    #     which the literal first appears in the planning graph. Note that
+    #     the level cost is **NOT** the minimum number of actions to achieve
+    #     a single goal literal.
+    #
+    #     For example, if Goal1 first appears in level 1 of the graph and
+    #     Goal2 first appears in level 3, then the levelsum is max(1, 3) = 3.
+    #
+    #     Hints
+    #     -----
+    #       - See the pseudocode folder for help on a simple implementation
+    #       - You can implement this function more efficiently if you expand
+    #         the graph one level at a time until the last goal is met rather
+    #         than filling the whole graph at the start.
+    #
+    #     See Also
+    #     --------
+    #     Russell-Norvig 10.3.1 (3rd Edition)
+    #
+    #     Notes
+    #     -----
+    #     WARNING: you should expect long runtimes using this heuristic with A*
+    #     """
+    #     costs = []
+    #     self.fill()
+    #     done_goals = []
+    #     for goal in self.goal:
+    #         for idx, layer in enumerate(self.literal_layers):
+    #             if goal in layer:
+    #
+    #                 print('goal in layer', goal, layer, idx)
+    #                 if goal not in done_goals:
+    #                     costs.append(idx)
+    #                     done_goals.append(goal)
+    #     return max(costs)
 
     def h_maxlevel(self):
         """ Calculate the max level heuristic for the planning graph
@@ -187,7 +226,12 @@ class PlanningGraph:
         For example, if Goal1 first appears in level 1 of the graph and
         Goal2 first appears in level 3, then the levelsum is max(1, 3) = 3.
 
-        Hint: expand the graph one level at a time until all goals are met.
+        Hints
+        -----
+          - See the pseudocode folder for help on a simple implementation
+          - You can implement this function more efficiently if you expand
+            the graph one level at a time until the last goal is met rather
+            than filling the whole graph at the start.
 
         See Also
         --------
@@ -197,8 +241,18 @@ class PlanningGraph:
         -----
         WARNING: you should expect long runtimes using this heuristic with A*
         """
-        # TODO: implement maxlevel heuristic
-        raise NotImplementedError
+        costs = []
+        self.fill()
+        done_goals = []
+        for goal in self.goal:
+            for idx, layer in enumerate(self.literal_layers):
+                if goal in layer:
+
+                    print('goal in layer', goal, layer, idx)
+                    if goal not in done_goals:
+                        costs.append(idx)
+                        done_goals.append(goal)
+        return max(costs)
 
     def h_setlevel(self):
         """ Calculate the set level heuristic for the planning graph
@@ -207,7 +261,12 @@ class PlanningGraph:
         appear such that no pair of goal literals are mutex in the last
         layer of the planning graph.
 
-        Hint: expand the graph one level at a time until you find the set level
+        Hints
+        -----
+          - See the pseudocode folder for help on a simple implementation
+          - You can implement this function more efficiently if you expand
+            the graph one level at a time until you find the set level rather
+            than filling the whole graph at the start.
 
         See Also
         --------
@@ -217,8 +276,25 @@ class PlanningGraph:
         -----
         WARNING: you should expect long runtimes using this heuristic on complex problems
         """
-        # TODO: implement setlevel heuristic
-        raise NotImplementedError
+        self.fill()
+        for idx, layer in enumerate(self.literal_layers):
+            all_goals_met = True
+            for goal in self.goal:
+                if goal not in layer:
+                    all_goals_met = False
+                    break
+            if not all_goals_met:
+                continue
+
+            goals_mutex = False
+            for x in self.goal:
+                for y in self.goal:
+                    if layer.is_mutex(x, y):
+                        goals_mutex = True
+            if not goals_mutex:
+                return idx
+
+
 
     ##############################################################################
     #                     DO NOT MODIFY CODE BELOW THIS LINE                     #

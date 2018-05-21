@@ -41,5 +41,5 @@ problem,algo,action,nodes_expanded,goal_test,new_nodes,plan_length,time_to_run ,
 4,greedy_best_first_graph_search with h_pg_setlevel,104,107,109,1164,23,,26.43006436
 4,astar_search with h_unmet_goals,104,34330,34332,328509,14,,4.468241426
 4,astar_search with h_pg_levelsum,104,1208,1210,12210,15,,154.3483734
-4,astar_search with h_pg_maxlevel,,,,,,,
-4,astar_search with h_pg_setlevel,,,,,,,
+4,astar_search with h_pg_maxlevel,104,62077,62079,599376,14,,4474.719203
+4,astar_search with h_pg_setlevel,104,22606,22608,224229,14,,4942.232729

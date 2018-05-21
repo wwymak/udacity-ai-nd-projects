@@ -156,22 +156,37 @@ class PlanningGraph:
         Russell-Norvig 10.3.1 (3rd Edition)
         """
         # TODO: implement this function without using fill
-        level_sum = 0
+        # level_sum = 0
+        # self.fill()
+        # done_goals = []
+        # for goal in self.goal:
+        #     for idx, layer in enumerate(self.literal_layers):
+        #         if goal in layer:
+        #             if goal not in done_goals:
+        #                 level_sum += idx
+        #                 done_goals.append(goal)
+        # return level_sum
 
-        # met = False #all goals subset of level
-        # while not self._is_leveled:
-        #     self._extend()
-        #     if self.goal.issubset(self.literal_layers):
-        #         met = True
-        self.fill()
-        done_goals = []
-        for goal in self.goal:
-            for idx, layer in enumerate(self.literal_layers):
-                if goal in layer:
-                    if goal not in done_goals:
+        idx = 0
+        level_sum = 0
+        done_goals = set()
+
+        while not self._is_leveled:
+            layer = self.literal_layers[-1]
+            goals_to_test = self.goal.difference(done_goals)
+            if len(goals_to_test) > 0:
+                for goal in goals_to_test:
+                    if goal in layer:
                         level_sum += idx
-                        done_goals.append(goal)
+                        done_goals.add(goal)
+
+                self._extend()
+                idx += 1
+            else:
+                break
         return level_sum
+
+
 
     def h_maxlevel(self):
         """ Calculate the max level heuristic for the planning graph

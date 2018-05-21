@@ -1,0 +1,45 @@
+problem,algo,action,nodes_expanded,goal_test,new_nodes,plan_length,time_to_run ,time_run_pypy
+1,breadth_first_search,20,43,56,178,6,0.006866903976,0.03247773508
+1,depth_first_graph_search,20,21,22,84,20,0.005211396143,0.00798889529
+1,uniform_cost_search,20,60,62,240,6,0.0135494601,0.01977614081
+1,greedy_best_first_graph_search with h_unmet_goals,20,7,9,29,6,0.001590077998,0.003039931878
+1,greedy_best_first_graph_search with h_pg_levelsum,20,6,8,28,6,0.6431917259,0.6686397973
+1,greedy_best_first_graph_search with h_pg_maxlevel,20,6,8,24,6,0.3755304811,0.1871201531
+1,greedy_best_first_graph_search with h_pg_setlevel,20,6,8,28,6,0.6273695279,0.5149281472
+1,astar_search with h_unmet_goals,20,50,52,206,6,0.009225487011,0.01585992612
+1,astar_search with h_pg_levelsum,20,28,30,122,6,1.589226389,0.2676372472
+1,astar_search with h_pg_maxlevel,20,43,45,180,6,1.448988691,0.2090418376
+1,astar_search with h_pg_setlevel,20,33,35,138,6,1.558532833,0.4095655871
+2,breadth_first_search,72,3343,4609,30503,9,2.293861346,0.3355919737
+2,depth_first_graph_search,72,624,625,5602,619,3.429964953,0.5415805508
+2,uniform_cost_search,72,5154,5156,46618,9,3.829271193,0.7244221717
+2,greedy_best_first_graph_search with h_unmet_goals,72,17,19,170,9,0.02166535193,0.02497842023
+2,greedy_best_first_graph_search with h_pg_levelsum,72,9,11,86,9,15.30772342,0.7214888227
+2,greedy_best_first_graph_search with h_pg_maxlevel,72,27,29,249,9,23.84690836,1.121078805
+2,greedy_best_first_graph_search with h_pg_setlevel,72,9,11,84,9,18.9519964,1.206636858
+2,astar_search with h_unmet_goals,72,2467,2469,22522,9,2.476773179,0.5695132948
+2,astar_search with h_pg_levelsum,72,357,359,3426,9,410.2554487,15.56297795
+2,astar_search with h_pg_maxlevel,72,2887,2889,26594,9,2136.789477,85.67838951
+2,astar_search with h_pg_setlevel,72,1037,1039,9605,9,1632.333792,90.5680037
+3,breadth_first_search,88,14663,18098,129625,12,11.42202511,0.8174858922
+3,depth_first_graph_search,88,408,409,3364,392,1.173181677,0.1793226791
+3,uniform_cost_search,88,18510,18512,161936,12,15.09768218,1.362899684
+3,greedy_best_first_graph_search with h_unmet_goals,88,25,27,230,15,0.04022696801,0.007026229054
+3,greedy_best_first_graph_search with h_pg_levelsum,88,14,16,126,14,29.80660584,1.349766426
+3,greedy_best_first_graph_search with h_pg_maxlevel,88,21,23,195,13,32.88352086,1.508719246
+3,greedy_best_first_graph_search with h_pg_setlevel,88,35,37,345,17,100.4392191,5.700635761
+3,astar_search with h_unmet_goals,88,7388,7390,6511,12,10.0534709,0.9302115892
+3,astar_search with h_pg_levelsum,88,369,371,3403,12,589.9445485,23.09714968
+3,astar_search with h_pg_maxlevel,88,9580,9582,86312,12,,446.6240854
+3,astar_search with h_pg_setlevel,88,3423,3425,31596,12,,485.8875616
+4,breadth_first_search,104,99736,114953,944130,14,115.0530008,6.027090963
+4,depth_first_graph_search,104,25174,25175,22849,24132,,1341.340737
+4,uniform_cost_search,104,113339,113341,1066413,14,74.78731856,13.7150201
+4,greedy_best_first_graph_search with h_unmet_goals,104,29,31,280,18,,0.01601204788
+4,greedy_best_first_graph_search with h_pg_levelsum,104,17,19,165,17,,2.443730017
+4,greedy_best_first_graph_search with h_pg_maxlevel,104,56,58,580,17,,6.415940546
+4,greedy_best_first_graph_search with h_pg_setlevel,104,107,109,1164,23,,26.43006436
+4,astar_search with h_unmet_goals,104,34330,34332,328509,14,,4.468241426
+4,astar_search with h_pg_levelsum,104,1208,1210,12210,15,,154.3483734
+4,astar_search with h_pg_maxlevel,,,,,,,
+4,astar_search with h_pg_setlevel,,,,,,,

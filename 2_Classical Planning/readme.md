@@ -6,10 +6,13 @@ In this project, a classical search agent is implemented to planning task. In th
 ### Problem set:
 The following lists the problems set
 
-```Note:
+```
+Note:
 C1, C2 etc are the cargo,
 P1, P2 etc are the planes
-the rest, e.g. SFO are airports```
+the rest, e.g. SFO are airports
+
+```
 
 problem1. 
 ```
@@ -58,32 +61,11 @@ As per the [AIMA book](http://aima.cs.berkeley.edu/), the performance of search 
 In the experiment set, we can think of space complexity as the number of nodes expanded, time complexity as the time taken to run the algorithm on a problem, and as we know the path plan for each of the strategies, we also know which algorithms are optimal.
 
 ### Experiment results
-
-
-```python
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn
-%matplotlib inline
-```
-
-
-```python
-df = pd.read_csv('run_search_output.csv')
-```
-
-#### The complete experiment output:
-
-
-```python
-df
-```
-
-
-
+The complete experiment output can be found [here](https://github.com/wwymak/udacity-ai-nd-projects/blob/master/2_Classical%20Planning/run_search_output.csv):
+and is also shwon in the table below.
 
 <div>
-<style scoped>
+<style>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -667,7 +649,7 @@ pivot
 
 
 <div>
-<style scoped>
+<style>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -791,14 +773,7 @@ ax.set_ylabel("nodes expanded")
 ```
 
 
-
-
-    Text(0,0.5,'nodes expanded')
-
-
-
-
-![png](output_9_1.png)
+![png](https://github.com/wwymak/udacity-ai-nd-projects/blob/master/2_Classical%20Planning/output_9_1.png)
 
 
 ### Measuring time complexity:  Time required vs problem size and algorithm used
@@ -817,7 +792,7 @@ pivot3
 
 
 <div>
-<style scoped>
+<style>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -947,7 +922,7 @@ ax.set_ylabel("time needed (s)")
 
 
 
-![png](output_12_1.png)
+![png](https://github.com/wwymak/udacity-ai-nd-projects/blob/master/2_Classical%20Planning/output_12_1.png)
 
 
 ### Optimality-- which algorithms can achieve the optimal (shortest plan length) solution?

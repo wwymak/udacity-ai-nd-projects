@@ -65,19 +65,6 @@ The complete experiment output can be found [here](https://github.com/wwymak/uda
 and is also shwon in the table below.
 
 <div>
-<style>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -792,19 +779,6 @@ pivot3
 
 
 <div>
-<style>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -915,13 +889,6 @@ ax.set_ylabel("time needed (s)")
 ```
 
 
-
-
-    Text(0,0.5,'time needed (s)')
-
-
-
-
 ![png](https://github.com/wwymak/udacity-ai-nd-projects/blob/master/2_Classical%20Planning/output_12_1.png)
 
 
@@ -935,23 +902,7 @@ pivot5 = pd.pivot_table(df, 'plan_length', 'algo', 'action')
 pivot5
 ```
 
-
-
-
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">

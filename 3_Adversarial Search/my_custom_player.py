@@ -47,3 +47,5 @@ class CustomPlayer(DataPlayer):
         #          (the timer is automatically managed for you)
         import random
         self.queue.put(random.choice(state.actions()))
+
+

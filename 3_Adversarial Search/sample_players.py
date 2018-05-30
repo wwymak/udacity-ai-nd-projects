@@ -5,6 +5,7 @@ import logging
 import pickle
 import random
 import datetime
+from copy import deepcopy
 
 logger = logging.getLogger(__name__)
 
@@ -135,11 +136,12 @@ class MinimaxPlayer(BasePlayer):
 
 
 class MCTSPlayer(BasePlayer):
-    def __init__(self, timelimit=2):
+    def __init__(self, timelimit=2, max_moves_per_sim = 50):
         self.states = []
         self.timelimit = datetime.timedelta(seconds=timelimit)
+        self.max_moves_per_sim = max_moves_per_sim
 
-    def update(self, state):
+    def update_state(self, state):
         self.states.append(state)
 
     def play(self):
@@ -167,25 +169,7 @@ class MCTSPlayer(BasePlayer):
         if state.ply_count < 2: self.queue.put(random.choice(state.actions()))
         self.queue.put(self.minimax(state, depth=3))
 
-    def minimax(self, state, depth):
 
-        def min_value(state, depth):
-            if state.terminal_test(): return state.utility(self.player_id)
-            if depth <= 0: return self.score(state)
-            value = float("inf")
-            for action in state.actions():
-                value = min(value, max_value(state.result(action), depth - 1))
-            return value
-
-        def max_value(state, depth):
-            if state.terminal_test(): return state.utility(self.player_id)
-            if depth <= 0: return self.score(state)
-            value = float("-inf")
-            for action in state.actions():
-                value = max(value, min_value(state.result(action), depth - 1))
-            return value
-
-        return max(state.actions(), key=lambda x: min_value(state.result(x), depth - 1))
 
     def score(self, state):
         own_loc = state.locs[self.player_id]
@@ -203,6 +187,20 @@ class MCTSPlayer(BasePlayer):
         pass
 
     def simulation(self):
+        states_copy = deepcopy(self.states)
+        visited_states = set()
+        # start state to simulate from
+        state = states_copy[-1]
+        possible_moves = state.actions()
+
+        curr_player = self.player_id
+        for i in range(self.max_moves_per_sim):
+            move = random.choice(possible_moves)
+            next_state = state.result(move)
+            states_copy.append(next_state)
+            if next_state.terminal_test():
+                break
+
         pass
 
     def backpropagation(self):

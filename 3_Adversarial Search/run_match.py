@@ -79,8 +79,11 @@ def play_matches(custom_agent, test_agent, num_rounds, num_procs=1, fair_matches
 
 
 def main(args):
-    test_agent = TEST_AGENTS[args.opponent.upper()]
-    custom_agent = Agent(CustomPlayer, "Custom Agent")
+    # test_agent = TEST_AGENTS[args.opponent.upper()]
+    # custom_agent = Agent(CustomPlayer, "Custom Agent")
+
+    test_agent = TEST_AGENTS["GREEDY"]
+    custom_agent = TEST_AGENTS["MINIMAX"]
     wins, num_games = play_matches(custom_agent, test_agent,
         args.rounds, args.processes, args.fair_matches)
 

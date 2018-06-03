@@ -140,6 +140,8 @@ class MCTSPlayer(BasePlayer):
         self.states = []
         self.timelimit = datetime.timedelta(seconds=timelimit)
         self.max_moves_per_sim = max_moves_per_sim
+        self.moves = {}
+        self.wins = {}
 
     def update_state(self, state):
         self.states.append(state)
@@ -167,7 +169,7 @@ class MCTSPlayer(BasePlayer):
         # randomly select a move as player 1 or 2 on an empty board, otherwise
         # return the optimal minimax move at a fixed search depth of 3 plies
         if state.ply_count < 2: self.queue.put(random.choice(state.actions()))
-        self.queue.put(self.minimax(state, depth=3))
+        self.queue.put(self.play(state, depth=3))
 
 
 
@@ -191,17 +193,39 @@ class MCTSPlayer(BasePlayer):
         visited_states = set()
         # start state to simulate from
         state = states_copy[-1]
-        possible_moves = state.actions()
 
-        curr_player = self.player_id
+
+        curr_player = state.player()
+
+        expand = True
+
         for i in range(self.max_moves_per_sim):
+            possible_moves = state.actions()
             move = random.choice(possible_moves)
+
             next_state = state.result(move)
             states_copy.append(next_state)
+
+            # who moved into that particular state.
+            if (curr_player, state) not in self.moves:
+            # if expand and (curr_player, state) not in self.moves:
+            #     expand = False
+                self.moves[(curr_player, state)] = 0
+                self.wins[(curr_player, state)] = 0
+
+            visited_states.add((curr_player, state))
+
+            curr_player = next_state.player()
+
             if next_state.terminal_test():
+                # if state.utility(curr_player) > 0:
+                #     self.wins[(curr_player, state)] += 1
+                # elif state.utility(curr_player) < 0:
+                #     win = False
                 break
 
-        pass
+        for player, state in visited_states:
+            self.moves[(player, state)] += 1
 
     def backpropagation(self):
 

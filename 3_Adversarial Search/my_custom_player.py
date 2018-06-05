@@ -1,5 +1,17 @@
-
+import random
+import numpy as np
 from sample_players import DataPlayer
+
+# node instance for each part of the MCTree
+# count the wins/visits to see how favorable a node is
+class Node():
+    def __init__(self, state, parent=None):
+        self.state = state
+        self.parent = parent
+        self.children = set()
+        self.wins = 0
+        self.visits = 0
+        self.expanded = False
 
 
 class CustomPlayer(DataPlayer):
@@ -45,7 +57,53 @@ class CustomPlayer(DataPlayer):
         # EXAMPLE: choose a random move without any search--this function MUST
         #          call self.queue.put(ACTION) at least once before time expires
         #          (the timer is automatically managed for you)
-        import random
-        self.queue.put(random.choice(state.actions()))
+        if state.ply_count < 2:
+            self.queue.put(random.choice(state.actions()))
+        self.queue.put(self.uct_search(state, depth=3))
 
+    def uct_search(self, state, depth):
+        root_node = Node(state)
+        for step in range(depth):
+            # do stuff
+            pass
+
+
+    def create_node(self,state, parent=None):
+        node = {}
+        node.state = state
+        node.parent = parent
+        node.children = {}
+        node.value = 0
+        node.visits = 0
+        node.expanded = False
+        return node
+
+    def best_child(self, node):
+        child_values = []
+        for child_node in node.children:
+            child_val = child_node.value / child_node.visits + np.sqrt(2 * np.log(node.visits)/ child_node.visits)
+            child_values.append(child_val)
+        return node.children[np.argmax(node.children.wins)]
+
+
+
+    def tree_policy(self, state, node):
+        return node
+
+    def default_policy(self, state):
+        while not state.terminal_test():
+            next_action = random.choice(state.actions())
+            for action in state.actions():
+                value = max(value, min_value(state.result(action), depth - 1))
+        return state.result(action)
+
+    def get_score(self):
+        return
+
+    def backup(self, node, reward_value):
+        curr_node = node
+        while curr_node.parent is not None:
+            curr_node.visits += 1
+            curr_node.value += reward_value
+            curr_node = curr_node.parent
 

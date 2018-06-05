@@ -207,22 +207,23 @@ class MCTSPlayer(BasePlayer):
             states_copy.append(next_state)
 
             # who moved into that particular state.
-            if (curr_player, state) not in self.moves:
-            # if expand and (curr_player, state) not in self.moves:
-            #     expand = False
+            # if (curr_player, state) not in self.moves:
+            if expand and (curr_player, state) not in self.moves:
+                expand = False
                 self.moves[(curr_player, state)] = 0
                 self.wins[(curr_player, state)] = 0
 
-            visited_states.add((curr_player, state))
-
-            curr_player = next_state.player()
-
+            win = False
             if next_state.terminal_test():
-                # if state.utility(curr_player) > 0:
-                #     self.wins[(curr_player, state)] += 1
+                if state.utility(curr_player) > 0:
+                    self.wins[(curr_player, state)] += 1
                 # elif state.utility(curr_player) < 0:
                 #     win = False
                 break
+
+            visited_states.add((curr_player, state, win))
+
+            curr_player = next_state.player()
 
         for player, state in visited_states:
             self.moves[(player, state)] += 1

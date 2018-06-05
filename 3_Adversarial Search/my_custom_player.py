@@ -61,11 +61,32 @@ class CustomPlayer(DataPlayer):
             self.queue.put(random.choice(state.actions()))
         self.queue.put(self.uct_search(state, depth=3))
 
+    #reward function
+    def get_score(self, node):
+        Q = node.value / node.visits
+        U = np.sqrt(node.parent.visits)/ node.visits
+        return Q + U
+
+    # def get_score(self, state):
+    #     own_loc = state.locs[self.player_id]
+    #     opp_loc = state.locs[1 - self.player_id]
+    #     own_liberties = state.liberties(own_loc)
+    #     opp_liberties = state.liberties(opp_loc)
+    #     return len(own_liberties) - len(opp_liberties)
+
+    def add_child(self, move, node):
+        node.children[move] =
+
     def uct_search(self, state, depth):
-        root_node = Node(state)
+        root_node = self.create_node(state)  #root node
         for step in range(depth):
-            # do stuff
-            pass
+            leaf_node = self.tree_policy(root_node)
+            reward = self.default_policy(state)
+            self.backup(leaf_node, reward)
+        return self.action_from_node(self.best_child(root_node, 0))
+
+    def action_from_node(self, node):
+        pass
 
 
     def create_node(self,state, parent=None):
@@ -86,19 +107,25 @@ class CustomPlayer(DataPlayer):
         return node.children[np.argmax(node.children.wins)]
 
 
-
-    def tree_policy(self, state, node):
+    def tree_policy(self, node, state):
+        while not state.terminal_test():
+            if node.expanded == False:
+                return self.expand(node)
+            else:
+                node = self.best_child(node)
         return node
 
     def default_policy(self, state):
         while not state.terminal_test():
             next_action = random.choice(state.actions())
-            for action in state.actions():
-                value = max(value, min_value(state.result(action), depth - 1))
-        return state.result(action)
+            state = state.result(next_action)
+            reward = self.get_score(state)
 
-    def get_score(self):
-        return
+        return reward
+
+    def expand(self, node):
+        node.expanded = True
+
 
     def backup(self, node, reward_value):
         curr_node = node

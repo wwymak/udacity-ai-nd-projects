@@ -2,16 +2,6 @@ import random
 import numpy as np
 from sample_players import DataPlayer
 
-# node instance for each part of the MCTree
-# count the wins/visits to see how favorable a node is
-class Node():
-    def __init__(self, state, parent=None):
-        self.state = state
-        self.parent = parent
-        self.children = set()
-        self.wins = 0
-        self.visits = 0
-        self.expanded = False
 
 
 class CustomPlayer(DataPlayer):
@@ -67,26 +57,26 @@ class CustomPlayer(DataPlayer):
         U = np.sqrt(node.parent.visits)/ node.visits
         return Q + U
 
-    # def get_score(self, state):
-    #     own_loc = state.locs[self.player_id]
-    #     opp_loc = state.locs[1 - self.player_id]
-    #     own_liberties = state.liberties(own_loc)
-    #     opp_liberties = state.liberties(opp_loc)
-    #     return len(own_liberties) - len(opp_liberties)
+    def value_estimate(self, state):
+        own_loc = state.locs[self.player_id]
+        opp_loc = state.locs[1 - self.player_id]
+        own_liberties = state.liberties(own_loc)
+        opp_liberties = state.liberties(opp_loc)
+        return len(own_liberties) - len(opp_liberties)
 
     def add_child(self, move, node):
-        node.children[move] =
+        node.children[move] = self.create_node(node.state, node)
+        pass
 
     def uct_search(self, state, depth):
         root_node = self.create_node(state)  #root node
         for step in range(depth):
             leaf_node = self.tree_policy(root_node)
-            reward = self.default_policy(state)
+            reward = self.default_policy(leaf_node.state)
             self.backup(leaf_node, reward)
-        return self.action_from_node(self.best_child(root_node, 0))
+        best_root_child, move = self.best_child(root_node)
+        return move
 
-    def action_from_node(self, node):
-        pass
 
 
     def create_node(self,state, parent=None):
@@ -99,12 +89,15 @@ class CustomPlayer(DataPlayer):
         node.expanded = False
         return node
 
+    # return the best child from the node and the action that lead to it
     def best_child(self, node):
-        child_values = []
-        for child_node in node.children:
-            child_val = child_node.value / child_node.visits + np.sqrt(2 * np.log(node.visits)/ child_node.visits)
-            child_values.append(child_val)
-        return node.children[np.argmax(node.children.wins)]
+        move_max =  max(node.children.keys(), key=lambda node: node.value)
+        return node.children[move_max], move_max
+        # child_values = []
+        # for move, child_node in node.children.items():
+        #     child_val = child_node.value / child_node.visits + np.sqrt(2 * np.log(node.visits)/ child_node.visits)
+        #     child_values.append(child_val)
+        # return node.children[np.argmax(node.children.wins)]
 
 
     def tree_policy(self, node, state):
@@ -119,12 +112,14 @@ class CustomPlayer(DataPlayer):
         while not state.terminal_test():
             next_action = random.choice(state.actions())
             state = state.result(next_action)
-            reward = self.get_score(state)
+            # reward = self.value_estimate(state)
 
-        return reward
+        return self.value_estimate(state)
 
     def expand(self, node):
         node.expanded = True
+        for move in node.state.actions():
+            self.add_child(move, node)
 
 
     def backup(self, node, reward_value):

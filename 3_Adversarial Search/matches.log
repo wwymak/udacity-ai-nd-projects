@@ -2,17 +2,17 @@ INFO:root:Search Configuration:
 Opponent: MINIMAX
 Rounds: 1
 Fair Matches: False
-Time Limit: 150
+Time Limit: 15000
 Processes: 1
 ERROR:sample_players:[Errno 2] No such file or directory: 'data.pickle'
 INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
 First agent: Agent(agent_class=<class 'sample_players.GreedyPlayer'>, name='Greedy Agent')
 Second agent: Agent(agent_class=<class 'my_custom_player.CustomPlayer'>, name='Custom Agent')
 
-INFO:isolation:Agent(agent_class=<class 'my_custom_player.CustomPlayer'>, name='Custom Agent') get_action() method did not respond within 150 milliseconds
+INFO:isolation:Agent(agent_class=<class 'my_custom_player.CustomPlayer'>, name='Custom Agent') get_action() method did not respond within 15000 milliseconds
 INFO:isolation:Status: Status.TIMEOUT
-Final State: Isolation(board=41523161203929677349709096572413951, ply_count=3, locs=(43, 73))
-History: [28, 73, <Action.WNW: 15>]
+Final State: Isolation(board=41523161203939122082674835862833151, ply_count=3, locs=(43, 13))
+History: [28, 13, <Action.WNW: 15>]
 Winner: Agent(agent_class=<class 'sample_players.GreedyPlayer'>, name='Greedy Agent')
 Loser: Agent(agent_class=<class 'my_custom_player.CustomPlayer'>, name='Custom Agent')
 
@@ -21,10 +21,10 @@ INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224
 First agent: Agent(agent_class=<class 'my_custom_player.CustomPlayer'>, name='Custom Agent')
 Second agent: Agent(agent_class=<class 'sample_players.GreedyPlayer'>, name='Greedy Agent')
 
-INFO:isolation:Agent(agent_class=<class 'my_custom_player.CustomPlayer'>, name='Custom Agent') get_action() method did not respond within 150 milliseconds
+INFO:isolation:Agent(agent_class=<class 'my_custom_player.CustomPlayer'>, name='Custom Agent') get_action() method did not respond within 15000 milliseconds
 INFO:isolation:Status: Status.TIMEOUT
-Final State: Isolation(board=41523081975776607818346038411913215, ply_count=2, locs=(96, 28))
-History: [96, 28]
+Final State: Isolation(board=41523161203939122082666039769819135, ply_count=2, locs=(44, 28))
+History: [44, 28]
 Winner: Agent(agent_class=<class 'sample_players.GreedyPlayer'>, name='Greedy Agent')
 Loser: Agent(agent_class=<class 'my_custom_player.CustomPlayer'>, name='Custom Agent')
 

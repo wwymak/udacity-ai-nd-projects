@@ -75,12 +75,16 @@ class CustomPlayer(DataPlayer):
 
 
     def uct_search(self, state, depth):
-        print('uct searching')
+        print('uct searching', state, depth)
         root_node = self.create_node(state)  #root node
-        print(root_node, 'root node')
+        # print(root_node, 'root node')
         for step in range(depth):
+            print('stepping', step)
             leaf_node = self.tree_policy(root_node)
             reward = self.default_policy(leaf_node['state'])
+            print('reward? ', reward)
+            print()
+            print('startbackup')
             self.backup(leaf_node, reward)
         # best_root_child, move = max(root_node, lambda node: node['visits'])
         best_root_child, move = self.best_child(root_node, 0)
@@ -97,7 +101,7 @@ class CustomPlayer(DataPlayer):
         node['visits'] = 0
         node['expanded'] = False
 
-        print('create node', node)
+        # print('create node', node)
         return node
 
     # return the best child from the node and the action that lead to it
@@ -113,14 +117,14 @@ class CustomPlayer(DataPlayer):
         # return node.children[np.argmax(node.children.wins)]
 
     def tree_policy(self, node):
-        print('tree policy', node)
-        print('tree policy', node['state'].terminal_test())
         while not node['state'].terminal_test():
+            print('termainl test false?', node['state'].terminal_test())
             if not node['expanded']:
                 self.expand(node)
             else:
                 node, best_move = self.best_child(node)
-                print(node, best_move, 'best child')
+                # print(node, best_move, 'best child')
+        print('terminal state')
         return node
 
     def default_policy(self, state):
@@ -141,7 +145,9 @@ class CustomPlayer(DataPlayer):
     # negamax
     def backup(self, node, reward_value):
         curr_node = node
+        print('backup test')
         while curr_node is not None:
+            print('backup', curr_node['visits'], reward_value)
             curr_node['visits'] += 1
             curr_node['value'] += reward_value
             reward_value = -reward_value

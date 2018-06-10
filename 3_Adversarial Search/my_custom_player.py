@@ -1,6 +1,6 @@
-import random
-import numpy as np
+
 from sample_players import DataPlayer
+
 
 class CustomPlayer(DataPlayer):
     """ Implement your own agent to play knight's Isolation
@@ -45,111 +45,7 @@ class CustomPlayer(DataPlayer):
         # EXAMPLE: choose a random move without any search--this function MUST
         #          call self.queue.put(ACTION) at least once before time expires
         #          (the timer is automatically managed for you)
-        if state.ply_count < 2:
-            self.queue.put(random.choice(state.actions()))
-        # else:
-        print('start uct search')
-        self.queue.put(self.uct_search(state, depth=3))
+        import random
+        self.queue.put(random.choice(state.actions()))
 
-    #reward function
-    def get_score(self, node, uct_const):
-        # print(node['visits'], 'node viists')
-        Q = node['value'] / 1 + node['visits']
-        if node['parent'] and node['parent']['visits'] > 0:
-            U = uct_const * np.sqrt(2 * np.log(node['parent']['visits']) / (1 + node['visits']))
-        else:
-            U = 0
-
-        return Q + U
-    #
-    # def value_estimate(self, state):
-    #     own_loc = state.locs[self.player_id]
-    #     opp_loc = state.locs[1 - self.player_id]
-    #     own_liberties = state.liberties(own_loc)
-    #     opp_liberties = state.liberties(opp_loc)
-    #     return len(own_liberties) - len(opp_liberties)
-
-    def add_child(self, move, node):
-        # print(node['state'], 'add childe', move)
-        node['children'][move] = self.create_node(node['state'], node)
-
-
-    def uct_search(self, state, depth):
-        print('uct searching', state, depth)
-        root_node = self.create_node(state)  #root node
-        # print(root_node, 'root node')
-        for step in range(depth):
-            print('stepping', step)
-            leaf_node = self.tree_policy(root_node)
-            reward = self.default_policy(leaf_node['state'])
-            print('reward? ', reward)
-            print()
-            print('startbackup')
-            self.backup(leaf_node, reward)
-        # best_root_child, move = max(root_node, lambda node: node['visits'])
-        best_root_child, move = self.best_child(root_node, 0)
-        print('best root childe', best_root_child, move, 'move')
-        return move
-
-    def create_node(self, state, parent=None, move=None):
-        node = {}
-        node['move'] = move
-        node['state'] = state
-        node['parent'] = parent
-        node['children'] = {}
-        node['value'] = 0
-        node['visits'] = 0
-        node['expanded'] = False
-
-        # print('create node', node)
-        return node
-
-    # return the best child from the node and the action that lead to it
-    def best_child(self, node, uct_const = 1):
-
-        move_max = max(node['children'].keys(), key=lambda k: self.get_score(node['children'][k], uct_const))
-
-        return node['children'][move_max], move_max
-        # child_values = []
-        # for move, child_node in node.children.items():
-        #     child_val = child_node.value / child_node.visits + np.sqrt(2 * np.log(node.visits)/ child_node.visits)
-        #     child_values.append(child_val)
-        # return node.children[np.argmax(node.children.wins)]
-
-    def tree_policy(self, node):
-        while not node['state'].terminal_test():
-            print('termainl test false?', node['state'].terminal_test())
-            if not node['expanded']:
-                self.expand(node)
-            else:
-                node, best_move = self.best_child(node)
-                # print(node, best_move, 'best child')
-        print('terminal state')
-        return node
-
-    def default_policy(self, state):
-        while not state.terminal_test():
-            next_action = random.choice(state.actions())
-            state = state.result(next_action)
-            # reward = self.value_estimate(state)
-        if state.utility > 0:
-            return 1
-        else:
-            return 0
-
-    def expand(self, node):
-        node['expanded'] = True
-        for move in node['state'].actions():
-            self.add_child(move, node)
-
-    # negamax
-    def backup(self, node, reward_value):
-        curr_node = node
-        print('backup test')
-        while curr_node is not None:
-            print('backup', curr_node['visits'], reward_value)
-            curr_node['visits'] += 1
-            curr_node['value'] += reward_value
-            reward_value = -reward_value
-            curr_node = curr_node['parent']
 

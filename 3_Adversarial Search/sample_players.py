@@ -104,8 +104,10 @@ class MinimaxPlayer(BasePlayer):
         """
         # randomly select a move as player 1 or 2 on an empty board, otherwise
         # return the optimal minimax move at a fixed search depth of 3 plies
-        if state.ply_count < 2: self.queue.put(random.choice(state.actions()))
-        self.queue.put(self.minimax(state, depth=3))
+        if state.ply_count < 2:
+            self.queue.put(random.choice(state.actions()))
+        else:
+            self.queue.put(self.minimax(state, depth=3))
 
     def minimax(self, state, depth):
 
@@ -136,14 +138,13 @@ class MinimaxPlayer(BasePlayer):
 
 
 class MCTSPlayer(BasePlayer):
-    def __init__(self, timelimit=2, max_moves_per_sim = 50):
+    def __init__(self, timelimit=2):
         self.states = []
+        self.max_moves_sim = 50 #max number of moves per simulation
+        self.c = 1.5 # exploratory const
         self.timelimit = datetime.timedelta(seconds=timelimit)
-        self.max_moves_per_sim = max_moves_per_sim
-        self.moves = {}
-        self.wins = {}
 
-    def update_state(self, state):
+    def update(self, state):
         self.states.append(state)
 
     def play(self):
@@ -169,7 +170,7 @@ class MCTSPlayer(BasePlayer):
         # randomly select a move as player 1 or 2 on an empty board, otherwise
         # return the optimal minimax move at a fixed search depth of 3 plies
         if state.ply_count < 2: self.queue.put(random.choice(state.actions()))
-        self.queue.put(self.play(state, depth=3))
+        self.queue.put(self.minimax(state, depth=3))
 
 
 
@@ -181,52 +182,8 @@ class MCTSPlayer(BasePlayer):
         return len(own_liberties) - len(opp_liberties)
 
 
-
-    def selection(self):
+    def simulation(self, state):
         pass
-
-    def expansion(self):
-        pass
-
-    def simulation(self):
-        states_copy = deepcopy(self.states)
-        visited_states = set()
-        # start state to simulate from
-        state = states_copy[-1]
-
-
-        curr_player = state.player()
-
-        expand = True
-
-        for i in range(self.max_moves_per_sim):
-            possible_moves = state.actions()
-            move = random.choice(possible_moves)
-
-            next_state = state.result(move)
-            states_copy.append(next_state)
-
-            # who moved into that particular state.
-            # if (curr_player, state) not in self.moves:
-            if expand and (curr_player, state) not in self.moves:
-                expand = False
-                self.moves[(curr_player, state)] = 0
-                self.wins[(curr_player, state)] = 0
-
-            win = False
-            if next_state.terminal_test():
-                if state.utility(curr_player) > 0:
-                    self.wins[(curr_player, state)] += 1
-                # elif state.utility(curr_player) < 0:
-                #     win = False
-                break
-
-            visited_states.add((curr_player, state, win))
-
-            curr_player = next_state.player()
-
-        for player, state in visited_states:
-            self.moves[(player, state)] += 1
 
     def backpropagation(self):
 

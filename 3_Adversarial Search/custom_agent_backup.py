@@ -2,6 +2,8 @@ import random
 import numpy as np
 from sample_players import DataPlayer
 
+
+
 class CustomPlayer(DataPlayer):
     """ Implement your own agent to play knight's Isolation
 
@@ -28,12 +30,12 @@ class CustomPlayer(DataPlayer):
 
         This method must call self.queue.put(ACTION) at least once, and may
         call it as many times as you want; the caller is responsible for
-        cutting off the function after the search time limit has expired. 
+        cutting off the function after the search time limit has expired.
 
         See RandomPlayer and GreedyPlayer in sample_players for more examples.
 
         **********************************************************************
-        NOTE: 
+        NOTE:
         - The caller is responsible for cutting off search, so calling
           get_action() from your own code will create an infinite loop!
           Refer to (and use!) the Isolation.play() function to run games.
@@ -47,18 +49,13 @@ class CustomPlayer(DataPlayer):
         #          (the timer is automatically managed for you)
         if state.ply_count < 2:
             self.queue.put(random.choice(state.actions()))
-        # else:
-        print('start uct search')
         self.queue.put(self.uct_search(state, depth=3))
 
     #reward function
     def get_score(self, node, uct_const):
-        # print(node['visits'], 'node viists')
-        Q = node['value'] / 1 + node['visits']
-        if node['parent'] and node['parent']['visits'] > 0:
-            U = uct_const * np.sqrt(2 * np.log(node['parent']['visits']) / (1 + node['visits']))
-        else:
-            U = 0
+        Q = node.value / node.visits
+        # U = np.sqrt(node.parent.visits)/ node.visits
+        U = uct_const * np.sqrt(2 * np.log(node.parent.number_visits) / (1 + node.number_visits))
 
         return Q + U
     #
@@ -70,24 +67,22 @@ class CustomPlayer(DataPlayer):
     #     return len(own_liberties) - len(opp_liberties)
 
     def add_child(self, move, node):
-        # print(node['state'], 'add childe', move)
-        node['children'][move] = self.create_node(node['state'], node)
-
+        node.children[move] = self.create_node(node.state, node)
+        pass
 
     def uct_search(self, state, depth):
-        print('uct searching')
         root_node = self.create_node(state)  #root node
-        print(root_node, 'root node')
         for step in range(depth):
             leaf_node = self.tree_policy(root_node)
-            reward = self.default_policy(leaf_node['state'])
+            reward = self.default_policy(leaf_node.state)
             self.backup(leaf_node, reward)
-        # best_root_child, move = max(root_node, lambda node: node['visits'])
-        best_root_child, move = self.best_child(root_node, 0)
-        print('best root childe', best_root_child, move, 'move')
+        best_root_child, move = max(root_node, lambda node: node.visits)
+        # best_root_child, move = self.best_child(root_node, 0)
         return move
 
-    def create_node(self, state, parent=None, move=None):
+
+
+    def create_node(self,state, parent=None, move=None):
         node = {}
         node['move'] = move
         node['state'] = state
@@ -96,31 +91,27 @@ class CustomPlayer(DataPlayer):
         node['value'] = 0
         node['visits'] = 0
         node['expanded'] = False
-
-        print('create node', node)
         return node
 
     # return the best child from the node and the action that lead to it
     def best_child(self, node, uct_const = 1):
 
-        move_max = max(node['children'].keys(), key=lambda k: self.get_score(node['children'][k], uct_const))
+        move_max = max(node.children.keys(), key=lambda node: self.get_score(node, uct_const))
 
-        return node['children'][move_max], move_max
+        return node.children[move_max], move_max
         # child_values = []
         # for move, child_node in node.children.items():
         #     child_val = child_node.value / child_node.visits + np.sqrt(2 * np.log(node.visits)/ child_node.visits)
         #     child_values.append(child_val)
         # return node.children[np.argmax(node.children.wins)]
 
+
     def tree_policy(self, node):
-        print('tree policy', node)
-        print('tree policy', node['state'].terminal_test())
         while not node['state'].terminal_test():
-            if not node['expanded']:
-                self.expand(node)
+            if node['expanded'] == False:
+                return self.expand(node)
             else:
-                node, best_move = self.best_child(node)
-                print(node, best_move, 'best child')
+                node = self.best_child(node)
         return node
 
     def default_policy(self, state):
@@ -134,16 +125,16 @@ class CustomPlayer(DataPlayer):
             return 0
 
     def expand(self, node):
-        node['expanded'] = True
-        for move in node['state'].actions():
+        node.expanded = True
+        for move in node.state.actions():
             self.add_child(move, node)
 
     # negamax
     def backup(self, node, reward_value):
         curr_node = node
         while curr_node is not None:
-            curr_node['visits'] += 1
-            curr_node['value'] += reward_value
+            curr_node.visits += 1
+            curr_node.value += reward_value
             reward_value = -reward_value
-            curr_node = curr_node['parent']
+            curr_node = curr_node.parent
 

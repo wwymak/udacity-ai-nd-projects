@@ -17,7 +17,8 @@ from my_custom_player import CustomPlayer
 logger = logging.getLogger(__name__)
 
 NUM_PROCS = 1
-NUM_ROUNDS = 5  # number times to replicate the match; increase for higher confidence estimate
+NUM_ROUNDS = 1  # number times to replicate the match; increase for higher confidence estimate
+# NUM_ROUNDS = 5  # number times to replicate the match; increase for higher confidence estimate
 TIME_LIMIT = 150  # number of milliseconds before timeout
 
 TEST_AGENTS = {
@@ -30,7 +31,8 @@ TEST_AGENTS = {
 
 def _run_matches(matches, name, num_processes=NUM_PROCS):
     results = []
-    pool = Pool(num_processes)
+    # pool = Pool(num_processes)
+    pool = Pool(1)
     print("Running {} games:".format(len(matches)))
     for result in pool.imap_unordered(play, matches):
         print("+" if result[0].name == name else '-', end="")
@@ -70,9 +72,9 @@ def play_matches(custom_agent, test_agent, num_rounds, num_procs=1, fair_matches
         matches.append(((custom_agent, test_agent), state, TIME_LIMIT, match_id))
     results = _run_matches(matches, custom_agent.name, num_procs)
 
-    if fair_matches:
-        _matches = make_fair_matches(matches, results)
-        results.extend(_run_matches(_matches, custom_agent.name, num_procs))
+    # if fair_matches:
+    #     _matches = make_fair_matches(matches, results)
+    #     results.extend(_run_matches(_matches, custom_agent.name, num_procs))
 
     wins = sum(int(r[0].name == custom_agent.name) for r in results)
     return wins, len(matches) * (1 + int(fair_matches))
@@ -80,10 +82,10 @@ def play_matches(custom_agent, test_agent, num_rounds, num_procs=1, fair_matches
 
 def main(args):
     # test_agent = TEST_AGENTS[args.opponent.upper()]
-    # custom_agent = Agent(CustomPlayer, "Custom Agent")
+    custom_agent = Agent(CustomPlayer, "Custom Agent")
 
     test_agent = TEST_AGENTS["GREEDY"]
-    custom_agent = TEST_AGENTS["MINIMAX"]
+    # custom_agent = TEST_AGENTS["MINIMAX"]
     wins, num_games = play_matches(custom_agent, test_agent,
         args.rounds, args.processes, args.fair_matches)
 

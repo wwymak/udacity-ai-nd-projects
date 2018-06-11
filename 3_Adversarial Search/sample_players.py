@@ -139,10 +139,13 @@ class MinimaxPlayer(BasePlayer):
 
 class MCTSPlayer(BasePlayer):
     def __init__(self, timelimit=2):
-        self.states = []
+        self.states = [] #history of game state
         self.max_moves_sim = 50 #max number of moves per simulation
         self.c = 1.5 # exploratory const
         self.timelimit = datetime.timedelta(seconds=timelimit)
+
+        self.win = {}
+        self.moves = {}
 
     def update(self, state):
         self.states.append(state)
@@ -183,6 +186,38 @@ class MCTSPlayer(BasePlayer):
 
 
     def simulation(self, state):
+        state_list = [state]
+        active_player = state.player()
+        visited_states = set()
+
+        for iter in self.max_moves_sim:
+            actions = state.actions()
+            move = random.choice(actions)
+            state = state.result(move)
+            state_list.append(state)
+
+            if expand and (active_player, state) not in self.moves:
+                expand = False
+                self.moves[(active_player, state)] = 0
+                self.win[(active_player, state)] = 0
+
+            visited_states.add((active_player, state))
+
+            active_player = state.player()
+
+            if state.terminal_test():
+                # winner = active_player
+                break
+
+        for player, state in visited_states:
+            if (player, state) not in self.moves:
+                continue
+            self.moves[(player, state)] += 1
+            if player == winner:
+                self.win[(player, state)] += 1
+
+
+
         pass
 
     def backpropagation(self):

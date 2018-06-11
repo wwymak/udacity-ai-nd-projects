@@ -10,7 +10,7 @@ import textwrap
 
 from multiprocessing.pool import ThreadPool as Pool
 
-from isolation import Isolation, Agent, play
+from isolation import Isolation, Agent, play,DebugBoard
 from sample_players import RandomPlayer, GreedyPlayer, MinimaxPlayer
 from my_custom_player import CustomPlayer
 
@@ -66,6 +66,7 @@ def play_matches(custom_agent, test_agent, cli_args):
     for match_id in range(cli_args.rounds):
         # initialize all games with a random move and response
         state = Isolation()
+        debug_board = DebugBoard.from_state(board)
         matches.append(((test_agent, custom_agent), state, cli_args.time_limit, match_id))
         matches.append(((custom_agent, test_agent), state, cli_args.time_limit, match_id))
     results = _run_matches(matches, custom_agent.name, cli_args.processes)

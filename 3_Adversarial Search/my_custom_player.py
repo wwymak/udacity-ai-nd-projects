@@ -1,6 +1,16 @@
-
+import numpy as np
+import random
 from sample_players import DataPlayer
 
+VALID_MOVES_PER_NODE = 9
+UCT_CONST = 1.4
+
+#  action value Q(s, a), visit count N(s, a),
+# and prior probability P(s, a). The tree is traversed by simulation (that
+# is, descending the tree in complete games without backup), starting
+# from the root state. At each time step t of each simulation, an action at
+# is selected from state st
+# a Q t = ( argmax ( ) s a, , + ( u s a))
 
 class CustomPlayer(DataPlayer):
     """ Implement your own agent to play knight's Isolation
@@ -45,7 +55,31 @@ class CustomPlayer(DataPlayer):
         # EXAMPLE: choose a random move without any search--this function MUST
         #          call self.queue.put(ACTION) at least once before time expires
         #          (the timer is automatically managed for you)
-        import random
+
         self.queue.put(random.choice(state.actions()))
+
+    class MCTSNode(object):
+        def __init__(self, state, parent=None, move=None):
+            self.parent = parent
+            self.move = move
+            self.state = state
+            self.num_visits = 0
+            self.children = {}
+            self.children_value = np.zeros([VALID_MOVES_PER_NODE], dtype=np.float32)
+            self.children_visits = np.zeros([VALID_MOVES_PER_NODE], dtype=np.float32)
+            self.children_prior = np.zeros([VALID_MOVES_PER_NODE], dtype=np.float32)
+            self.expanded = False
+
+        # using np broadcasting to calc all the q values of the children
+        def child_Q(self):
+            return self.children_value / (1 + self.children_visits)
+
+        def child_U (self):
+            return UCT_CONST * np.sqrt(1 + self.num_visits) * self.children_prior / (1 + self.children_visits)
+
+
+
+
+
 
 

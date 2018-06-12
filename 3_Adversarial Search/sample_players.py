@@ -190,6 +190,8 @@ class MCTSPlayer(BasePlayer):
         active_player = state.player()
         visited_states = set()
 
+        expand = True
+
         for iter in self.max_moves_sim:
             actions = state.actions()
             move = random.choice(actions)
@@ -206,7 +208,10 @@ class MCTSPlayer(BasePlayer):
             active_player = state.player()
 
             if state.terminal_test():
-                # winner = active_player
+                if state.utility(active_player) > 0:
+                    winner = active_player
+                elif state.utility(active_player) < 0:
+                    winner = abs(1 - active_player)
                 break
 
         for player, state in visited_states:

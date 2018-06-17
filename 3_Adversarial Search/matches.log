@@ -1,23 +1,447 @@
 INFO:root:Search Configuration:
 Opponent: MINIMAX
-Rounds: 5
+Rounds: 20
 Fair Matches: False
-Time Limit: 150
+Time Limit: 300
 Processes: 1
-ERROR:sample_players:[Errno 2] No such file or directory: 'data.pickle'
 INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
 First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
-Second agent: Agent(agent_class=<class 'my_custom_player.CustomPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
 
-INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 150 milliseconds
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
 INFO:isolation:Status: Status.TIMEOUT
-Final State: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
-History: []
-Winner: Agent(agent_class=<class 'my_custom_player.CustomPlayer'>, name='Custom Agent')
+Final State: Isolation(board=41523161203936760899442197401626623, ply_count=2, locs=(16, 71))
+History: [16, 71]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
 Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
 
-ERROR:sample_players:[Errno 2] No such file or directory: 'data.pickle'
 INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
-First agent: Agent(agent_class=<class 'my_custom_player.CustomPlayer'>, name='Custom Agent')
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
 Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
 
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41360580062699694520420580441712639, ply_count=3, locs=(92, 98))
+History: [107, 98, <Action.ESE: -15>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203939122082666035743287295, ply_count=2, locs=(32, 44))
+History: [32, 44]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41522527378638934181006039278675967, ply_count=3, locs=(39, 99))
+History: [66, 99, <Action.SSE: -27>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203939121506222879920875503, ply_count=2, locs=(59, 4))
+History: [59, 4]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203938531786872723762833407, ply_count=2, locs=(39, 69))
+History: [39, 69]
+Winner: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Loser: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203939120929621390129096703, ply_count=2, locs=(60, 47))
+History: [60, 47]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=40873807183367748661959631419992063, ply_count=3, locs=(109, 79))
+History: [98, 79, <Action.ENE: 11>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203938974508722246454863871, ply_count=2, locs=(43, 67))
+History: [43, 67]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41198642650280694779439706720430079, ply_count=3, locs=(59, 108))
+History: [34, 108, <Action.NNE: 25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=36330230520104180339452387543476223, ply_count=2, locs=(112, 99))
+History: [112, 99]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203938974508731042480777213, ply_count=3, locs=(26, 67))
+History: [1, 67, <Action.NNE: 25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203939122082683632224274431, ply_count=2, locs=(13, 14))
+History: [13, 14]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=40225086950619788947881775039768575, ply_count=3, locs=(110, 40))
+History: [85, 40, <Action.NNE: 25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41360901927109613571386874861185023, ply_count=2, locs=(68, 107))
+History: [68, 107]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523081975776605512502960747177983, ply_count=3, locs=(61, 96))
+History: [36, 96, <Action.NNE: 25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161165248773488532628988487679, ply_count=2, locs=(72, 85))
+History: [72, 85]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41522527378620118502051405291710463, ply_count=3, locs=(99, 17))
+History: [74, 17, <Action.NNE: 25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41198642650280695355619001227012095, ply_count=2, locs=(108, 48))
+History: [108, 48]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523121589857717376562245775910911, ply_count=2, locs=(67, 95))
+History: [67, 95]
+Winner: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Loser: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161201521270443454373606451199, ply_count=2, locs=(28, 81))
+History: [28, 81]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203939121794453247482652663, ply_count=3, locs=(58, 3))
+History: [33, 3, <Action.NNE: 25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203939085189195484804671487, ply_count=2, locs=(65, 19))
+History: [65, 19]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523138921018341158862389201856511, ply_count=3, locs=(66, 94))
+History: [91, 94, <Action.SSW: -25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523151300381028867778475869595647, ply_count=2, locs=(75, 93))
+History: [75, 93]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203939122082674835594405871, ply_count=3, locs=(29, 43))
+History: [4, 43, <Action.NNE: 25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203939122082683632223741951, ply_count=2, locs=(15, 19))
+History: [15, 19]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=36249732231109609201696797091686399, ply_count=3, locs=(91, 112))
+History: [106, 112, <Action.ESE: -15>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203939117470997613795862527, ply_count=2, locs=(62, 20))
+History: [62, 20]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203636890618772767085946879, ply_count=3, locs=(53, 33))
+History: [78, 33, <Action.SSW: -25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41360901927109908719287656167499775, ply_count=2, locs=(42, 107))
+History: [42, 107]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41521893553338746279325147798169599, ply_count=3, locs=(67, 100))
+History: [42, 100, <Action.NNE: 25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203939122082683632081692671, ply_count=2, locs=(27, 23))
+History: [27, 23]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203939122082679234177655807, ply_count=3, locs=(42, 10))
+History: [17, 10, <Action.NNE: 25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=31138250574219409768272265390057471, ply_count=2, locs=(98, 113))
+History: [98, 113]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203929677344932818329790463, ply_count=3, locs=(73, 52))
+History: [48, 52, <Action.NNE: 25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523161203938530633951768911800319, ply_count=2, locs=(69, 60))
+History: [69, 60]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523081975776606665424499713763327, ply_count=3, locs=(60, 96))
+History: [35, 96, <Action.NNE: 25>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=20753339944499697453860898555807739, ply_count=4, locs=(2, 99))
+History: [13, 114, <Action.WSW: -11>, <Action.ESE: -15>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Initial game state: Isolation(board=41523161203939122082683632224299007, ply_count=0, locs=(None, None))
+First agent: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Second agent: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:isolation:Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent') get_action() method did not respond within 300 milliseconds
+INFO:isolation:Status: Status.TIMEOUT
+Final State: Isolation(board=41523156251876549009810938983868415, ply_count=5, locs=(65, 53))
+History: [67, 78, <Action.NNE: 25>, <Action.SSW: -25>, <Action.SSE: -27>]
+Winner: Agent(agent_class=<class 'sample_players.MTDPlayer'>, name='Custom Agent')
+Loser: Agent(agent_class=<class 'sample_players.MinimaxPlayer'>, name='Minimax Agent')
+
+INFO:__main__:Your agent won 95.0% of matches against Minimax Agent

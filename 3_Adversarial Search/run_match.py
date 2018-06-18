@@ -16,8 +16,8 @@ from my_custom_player import CustomPlayer
 
 logger = logging.getLogger(__name__)
 
-NUM_PROCS = 1
-NUM_ROUNDS = 100  # number times to replicate the match; increase for higher confidence estimate
+NUM_PROCS = 4
+NUM_ROUNDS = 50  # number times to replicate the match; increase for higher confidence estimate
 TIME_LIMIT = 300  # number of milliseconds before timeout
 
 TEST_AGENTS = {
@@ -114,7 +114,7 @@ if __name__ == "__main__":
         """)
     )
     parser.add_argument(
-        '-f', '--fair_matches', action="store_true",
+        '-f', '--fair_matches', action="store_true", default=True,
         help="""\
             Run 'fair' matches to mitigate differences caused by opening position 
             (useful for analyzing heuristic performance).  Setting this flag doubles 

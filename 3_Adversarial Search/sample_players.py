@@ -186,7 +186,7 @@ class MinimaxPlayer(BasePlayer):
         if state.ply_count < 2:
             self.queue.put(random.choice(state.actions()))
         else:
-            self.queue.put(self.minimax(state, depth=7))
+            self.queue.put(self.minimax(state, depth=3))
 
     def minimax(self, state, depth):
 
@@ -257,7 +257,7 @@ class MTDPlayer(BasePlayer):
         if state.ply_count < 2:
             self.queue.put(random.choice(state.actions()))
         else:
-            self.queue.put(self.mtdf(state, 0, depth=7)[0])
+            self.queue.put(self.mtdf(state, 0, depth=4)[0])
             # self.queue.put(self.iterative_deepening(state, depth=10, timelimit=280))
 
     def mtdf(self, state, guess, depth):
@@ -300,7 +300,7 @@ class MTDPlayer(BasePlayer):
                 break
         return action
 
-    def alphaBetaWithMemory(self, state, alpha, beta, depth):
+    def alphaBetaWithMemory1(self, state, alpha, beta, depth):
         # if state in self.context:
         if state in self.transposition_table:
             stored_alpha = self.transposition_table[state][0]
@@ -349,10 +349,106 @@ class MTDPlayer(BasePlayer):
 
         return value, max(state.actions(), key=lambda x: min_value(state.result(x), alpha, beta, depth - 1))
 
+    def alphaBetaWithMemory(self, state, alpha, beta, depth):
+        a = deepcopy(alpha)
+        b = deepcopy(beta)
+        # if state in self.context:
+        if state in self.transposition_table:
+            stored_alpha = self.transposition_table[state][0]
+            stored_beta = self.transposition_table[state][1]
+            stored_move = self.transposition_table[state][2]
+            # stored_alpha = self.context[state][0]
+            # stored_beta = self.context[state][1]
+            # stored_move = self.context[state][2]
+
+            if stored_alpha >= beta:
+                return stored_alpha, stored_move
+            if stored_beta <= alpha:
+                return stored_beta, stored_move
+
+            alpha = max(stored_alpha, alpha)
+            beta = min(beta, stored_beta)
+
+        def min_value(state, alpha, beta, depth):
+            if state.terminal_test():
+                return state.utility(self.player_id)
+            if depth <= 0:
+                return self.score(state)
+            value = float("inf")
+            for action in state.actions():
+                value = min(value, max_value(state.result(action), alpha, beta, depth - 1))
+                if value <= alpha:
+                    return value
+                beta = min(beta, value)
+            return value
+
+        def max_value(state, alpha, beta, depth):
+            if state.terminal_test():
+                return state.utility(self.player_id)
+            if depth <= 0:
+                return self.score(state)
+            """
+            g: = -INFINITY;
+            a: = alpha; 
+            c: = firstchild(n);
+            while (g < beta) and (c != NOCHILD) do
+            g: = max(g, AlphaBetaWithMemory(c, a, beta, d - 1));
+            a: = max(a, g);
+            c: = nextbrother(c);
+            """
+
+            value = float("-inf")
+            for action in state.actions():
+                value = max(value, min_value(state.result(action), alpha, beta, depth - 1))
+                if value >= beta:
+                    return value
+                alpha = max(alpha, value)
+            return value
+
+        action = max(state.actions(), key=lambda x: min_value(state.result(x), alpha, beta, depth - 1))
+        value = min_value(state.result(action), alpha, beta, depth - 1)
+
+        # if value <= alpha:
+        #     self.transposition_table[state][0] = alpha
+        #
+        #     if g <= alpha then n.upperbound:=
+        #     g;
+        #     store
+        #     n.upperbound;
+        #     / *Found
+        #     an
+        #     accurate
+        #     minimax
+        #     value - will
+        #     not occur if called
+        #     with zero window * /
+        #     if g > alpha and g < beta then
+        #     n.lowerbound: = g;
+        #     n.upperbound: = g;
+        #     store
+        #     n.lowerbound, n.upperbound;
+        #     / *Fail
+        #     high
+        #     result
+        #     implies
+        #     a
+        #     lower
+        #     bound * /
+        #     if g >= beta then n.lowerbound:=
+        #     g;
+        #     store
+        #     n.lowerbound;
+        #     return g;
+
+        self.transposition_table[state] = (alpha, beta, action)
+        # self.context[state] = alpha, beta, action
+
+        return value, max(state.actions(), key=lambda x: min_value(state.result(x), alpha, beta, depth - 1))
+
     def score(self, state):
         own_loc = state.locs[self.player_id]
         opp_loc = state.locs[1 - self.player_id]
         own_liberties = state.liberties(own_loc)
         opp_liberties = state.liberties(opp_loc)
-        return len(own_liberties) - len(opp_liberties)
+        return 20 * len(own_liberties) - len(opp_liberties)
 

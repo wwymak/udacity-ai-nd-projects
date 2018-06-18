@@ -17,14 +17,14 @@ from my_custom_player import CustomPlayer
 logger = logging.getLogger(__name__)
 
 NUM_PROCS = 1
-NUM_ROUNDS = 20  # number times to replicate the match; increase for higher confidence estimate
+NUM_ROUNDS = 100  # number times to replicate the match; increase for higher confidence estimate
 TIME_LIMIT = 300  # number of milliseconds before timeout
 
 TEST_AGENTS = {
     "RANDOM": Agent(RandomPlayer, "Random Agent"),
     "GREEDY": Agent(GreedyPlayer, "Greedy Agent"),
     "MINIMAX": Agent(MinimaxPlayer, "Minimax Agent"),
-    "AlphaBeta": Agent(AlphaBetaPlayer, "Minimax Agent"),
+    "AlphaBeta": Agent(AlphaBetaPlayer, "AlphaBeta Agent"),
     # "SELF": Agent(AlphaBetaPlayer, "Custom TestAgent")
     "SELF": Agent(CustomPlayer, "Custom TestAgent")
 }
@@ -75,6 +75,8 @@ def play_matches(custom_agent, test_agent, cli_args):
     if cli_args.fair_matches:
         _matches = make_fair_matches(matches, results)
         results.extend(_run_matches(_matches, custom_agent.name, cli_args.processes))
+    # _matches = make_fair_matches(matches, results)
+    # results.extend(_run_matches(_matches, custom_agent.name, cli_args.processes))
 
     wins = sum(int(r[0].name == custom_agent.name) for r in results)
     return wins, len(matches) * (1 + int(cli_args.fair_matches))

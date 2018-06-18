@@ -186,7 +186,7 @@ class MinimaxPlayer(BasePlayer):
         if state.ply_count < 2:
             self.queue.put(random.choice(state.actions()))
         else:
-            self.queue.put(self.minimax(state, depth=6))
+            self.queue.put(self.minimax(state, depth=7))
 
     def minimax(self, state, depth):
 
@@ -233,6 +233,8 @@ class MTDPlayer(BasePlayer):
     """
     def __init__(self, player_id):
         super().__init__(player_id)
+        print(player_id, 'my player id')
+
         self.transposition_table = {}
 
     def get_action(self, state):
@@ -251,12 +253,12 @@ class MTDPlayer(BasePlayer):
         **********************************************************************
         """
         # randomly select a move as player 1 or 2 on an empty board, otherwise
-        # return the optimal minimax move at a fixed search depth of 3 plies
+        # return the optimal mtdf move at a fixed search depth
         if state.ply_count < 2:
             self.queue.put(random.choice(state.actions()))
         else:
-            self.queue.put(self.mtdf(state, 0, depth=6))
-            # self.queue.put(self.iterative_deepening(state, depth=50, timelimit=180))
+            self.queue.put(self.mtdf(state, 0, depth=7)[0])
+            # self.queue.put(self.iterative_deepening(state, depth=10, timelimit=280))
 
     def mtdf(self, state, guess, depth):
         upperbound = float("inf")
@@ -271,14 +273,30 @@ class MTDPlayer(BasePlayer):
                 upperbound = guess
             else:
                 lowerbound = guess
-        return action
+        return action, guess
 
-    def iterative_deepening(self, state, depth=20, timelimit=250):
-        guess = 0
-        start = datetime.datetime.now()
+
+    def mtdf_with_id(self, state, guess, depth):
+        upperbound = float("inf")
+        lowerbound = float("-inf")
+        while lowerbound < upperbound:
+            if guess == lowerbound:
+                beta = guess + 1
+            else:
+                beta = guess
+            guess, action, state = self.alphaBetaWithMemory(state, beta - 1, beta, depth)
+            if guess < beta:
+                upperbound = guess
+            else:
+                lowerbound = guess
+        return action, guess
+
+    def iterative_deepening(self, state, guess=0, depth=10, timelimit=280):
+        guess = guess
+        start = datetime.now()
         for depth in range(1, depth):
-            action = self.mtdf(state, guess, depth)
-            if (datetime.datetime.now() - start).microseconds > timelimit * 1000:
+            action, guess = self.mtdf(state, guess, depth)
+            if (datetime.now() - start).microseconds > timelimit * 1000:
                 break
         return action
 

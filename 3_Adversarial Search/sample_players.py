@@ -353,21 +353,60 @@ class MTDPlayer(BasePlayer):
         a = deepcopy(alpha)
         b = deepcopy(beta)
         # if state in self.context:
-        if state in self.transposition_table:
-            stored_alpha = self.transposition_table[state][0]
-            stored_beta = self.transposition_table[state][1]
-            stored_move = self.transposition_table[state][2]
-            # stored_alpha = self.context[state][0]
-            # stored_beta = self.context[state][1]
-            # stored_move = self.context[state][2]
+        if state in self.transposition_table and self.transposition_table[state]['depth'] >= depth:
+            stored_alpha = self.transposition_table[state]['lower']
+            stored_beta = self.transposition_table[state]['upper']
+            stored_value = self.transposition_table[state]['value']
+            stored_move = self.transposition_table[state]['move']
+            stored_type = self.transposition_table[state]['type']
 
-            if stored_alpha >= beta:
-                return stored_alpha, stored_move
-            if stored_beta <= alpha:
-                return stored_beta, stored_move
+            if stored_type == 'EXACT': # stored value is exact
+                return stored_value
 
-            alpha = max(stored_alpha, alpha)
-            beta = min(beta, stored_beta)
+            if stored_type == 'LOWERBOUND' and stored_value > a:
+                alpha = stored_value
+            elif stored_type == 'UPPERBOUND' and stored_value <b:
+                beta = stored_value # update upperbound beta if needed
+                if alpha >= beta:
+                    return stored_value # if lowerbound surpasses upperbound
+        if depth == 0 or state.terminal_test():
+            value = self.score(state)
+            if value <= alpha:
+                self.transposition_table[state]['value'] = value
+                self.transposition_table[state]['depth'] = depth
+                self.transposition_table[state]['type'] = 'LOWERBOUND'
+            elif value >= beta: # an upperbound value
+                self.transposition_table[state]['value'] = value
+                self.transposition_table[state]['depth'] = depth
+                self.transposition_table[state]['type'] = 'UPPERBOUND'
+            else: # a true minimax value
+                self.transposition_table[state]['value'] = value
+                self.transposition_table[state]['depth'] = depth
+                self.transposition_table[state]['type'] = 'EXACT'
+            return value
+
+
+        elif state.player() == state.player_id:
+            value = float("-inf")
+            sorted(state.actions(), key=lambda x: self.score(state.result(x)))
+
+            while (value < beta):
+                for action in state.actions():
+                    c = state.result(action)
+                    value = max(value,self.alphaBetaWithMemory(c, a, beta, depth - 1))
+                    a = max(a, value)
+
+        elif state.player() != state.player_id:
+            value = float("inf")
+            sorted(state.actions(), key=lambda x: -self.score(state.result(x)))
+
+            while (value > alpha):
+                for action in state.actions():
+                    c = state.result(action)
+                    value = min(value, self.alphaBetaWithMemory(c, a, beta, depth - 1))
+                    b = min(b, value)
+
+
 
         def min_value(state, alpha, beta, depth):
             if state.terminal_test():
@@ -443,7 +482,7 @@ class MTDPlayer(BasePlayer):
         self.transposition_table[state] = (alpha, beta, action)
         # self.context[state] = alpha, beta, action
 
-        return value, max(state.actions(), key=lambda x: min_value(state.result(x), alpha, beta, depth - 1))
+        return value#, max(state.actions(), key=lambda x: min_value(state.result(x), alpha, beta, depth - 1))
 
     def score(self, state):
         own_loc = state.locs[self.player_id]

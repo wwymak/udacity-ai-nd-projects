@@ -11,14 +11,15 @@ import textwrap
 from multiprocessing.pool import ThreadPool as Pool
 
 from isolation import Isolation, Agent, play
-from sample_players import RandomPlayer, GreedyPlayer, MinimaxPlayer, AlphaBetaPlayer, MTDPlayer
-from my_custom_player import CustomPlayer
+from sample_players import RandomPlayer, GreedyPlayer, MinimaxPlayer, AlphaBetaPlayer
+from my_mtdf_player import MTDfPlayer
+# from my_custom_player import CustomPlayer
 
 logger = logging.getLogger(__name__)
 
-NUM_PROCS = 4
-NUM_ROUNDS = 50  # number times to replicate the match; increase for higher confidence estimate
-TIME_LIMIT = 300  # number of milliseconds before timeout
+NUM_PROCS = 1
+NUM_ROUNDS = 2  # number times to replicate the match; increase for higher confidence estimate
+TIME_LIMIT = 3000  # number of milliseconds before timeout
 
 TEST_AGENTS = {
     "RANDOM": Agent(RandomPlayer, "Random Agent"),
@@ -26,7 +27,7 @@ TEST_AGENTS = {
     "MINIMAX": Agent(MinimaxPlayer, "Minimax Agent"),
     "AlphaBeta": Agent(AlphaBetaPlayer, "AlphaBeta Agent"),
     # "SELF": Agent(AlphaBetaPlayer, "Custom TestAgent")
-    "SELF": Agent(CustomPlayer, "Custom TestAgent")
+    "SELF": Agent(MTDfPlayer, "Custom TestAgent")
 }
 
 
@@ -85,7 +86,7 @@ def play_matches(custom_agent, test_agent, cli_args):
 def main(args):
     test_agent = TEST_AGENTS[args.opponent.upper()]
     # custom_agent = Agent(AlphaBetaPlayer, "Custom Agent")
-    custom_agent = Agent(MTDPlayer, "Custom Agent")
+    custom_agent = Agent(MTDfPlayer, "Custom Agent")
     # custom_agent = Agent(CustomPlayer, "Custom Agent")
     wins, num_games = play_matches(custom_agent, test_agent, args)
 
@@ -114,7 +115,7 @@ if __name__ == "__main__":
         """)
     )
     parser.add_argument(
-        '-f', '--fair_matches', action="store_true", default=True,
+        '-f', '--fair_matches', action="store_true", default=False,
         help="""\
             Run 'fair' matches to mitigate differences caused by opening position 
             (useful for analyzing heuristic performance).  Setting this flag doubles 

@@ -17,9 +17,9 @@ from my_mtdf_player import MTDfPlayer
 
 logger = logging.getLogger(__name__)
 
-NUM_PROCS = 1
-NUM_ROUNDS = 2  # number times to replicate the match; increase for higher confidence estimate
-TIME_LIMIT = 3000  # number of milliseconds before timeout
+NUM_PROCS = 4
+NUM_ROUNDS = 20  # number times to replicate the match; increase for higher confidence estimate
+TIME_LIMIT = 300  # number of milliseconds before timeout
 
 TEST_AGENTS = {
     "RANDOM": Agent(RandomPlayer, "Random Agent"),
@@ -85,8 +85,8 @@ def play_matches(custom_agent, test_agent, cli_args):
 
 def main(args):
     test_agent = TEST_AGENTS[args.opponent.upper()]
-    # custom_agent = Agent(AlphaBetaPlayer, "Custom Agent")
-    custom_agent = Agent(MTDfPlayer, "Custom Agent")
+    custom_agent = Agent(AlphaBetaPlayer, "Custom Agent")
+    # custom_agent = Agent(MTDfPlayer, "Custom Agent")
     # custom_agent = Agent(CustomPlayer, "Custom Agent")
     wins, num_games = play_matches(custom_agent, test_agent, args)
 

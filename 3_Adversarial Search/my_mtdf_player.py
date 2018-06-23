@@ -33,6 +33,7 @@ class MTDfPlayer(DataPlayer):
         print(player_id, 'my player id')
 
         self.transposition_table = {}
+        self.move = None
 
     def get_action(self, state):
         """ Choose an action available in the current state
@@ -71,17 +72,22 @@ class MTDfPlayer(DataPlayer):
         upperbound = inf
         lowerbound = -inf
         if state in self.transposition_table and self.transposition_table[state].depth >= depth:
+            # print('yes')
             if self.transposition_table[state].lowerbound > gamma:
+                if depth == game_depth:
+                    self.move = self.transposition_table[state].move
                 return self.transposition_table[state].lowerbound, self.transposition_table[state].move
             if self.transposition_table[state].upperbound < gamma:
+                if depth == game_depth:
+                    self.move = self.transposition_table[state].move
                 return self.transposition_table[state].upperbound, self.transposition_table[state].move
 
         if state.terminal_test() or depth == 0:
-            # print('terminal')
             lowerbound = upperbound = value = self.score(state)
         else:
             moves = state.actions()
             best_move = moves[0]
+            self.move = best_move
 
             for move in moves:
                 if value >= gamma:
@@ -89,7 +95,8 @@ class MTDfPlayer(DataPlayer):
                 statecopy = deepcopy(state)
                 nextstate = statecopy.result(move)
 
-                move_val = - 1 * self.MT(nextstate, -gamma, depth -1, game_depth )[0]
+                # move_val =  1 * self.MT(nextstate, gamma, depth -1, game_depth )[0]
+                move_val =  -1 * self.MT(nextstate, -gamma, depth -1, game_depth )[0]
                 if value < move_val:
                     value = move_val
                     best_move = move
@@ -97,6 +104,8 @@ class MTDfPlayer(DataPlayer):
             if value < gamma:
                 upperbound = value
             else:
+                if depth == game_depth:
+                    self.move = best_move
                 lowerbound = value
 
         if depth > 0 and not state.terminal_test():
@@ -137,19 +146,21 @@ class MTDfPlayer(DataPlayer):
 
         return best_move, value
 
-    def iterative_deepening(self, state, guess=0, depth=5, timelimit=1500):
+    def iterative_deepening(self, state, guess=0, depth=35, timelimit=300):
         guess = guess
         start = datetime.now()
-        action = random.choice(state.actions())
+        # action = random.choice(state.actions())
+        action = None
         for depth in range(1, depth):
             a = datetime.now()
             action, guess = self.MTDf(state, guess, depth)
+            self.queue.put(action)
+            # self.queue.put(self.move)
             if not action:
                 print('action err!!')
             # print((datetime.now() - a).microseconds / 1000)
             # print('cf time', (datetime.now() - start).microseconds)
             if (datetime.now() - start).microseconds > timelimit * 1000:
-                print('timeout ',(datetime.now() - start).microseconds, action )
                 break
         return action
 
@@ -165,4 +176,4 @@ class MTDfPlayer(DataPlayer):
         opp_loc = state.locs[1 - self.player_id]
         own_liberties = state.liberties(own_loc)
         opp_liberties = state.liberties(opp_loc)
-        return 20 * len(own_liberties) - len(opp_liberties)
+        return len(own_liberties) - len(opp_liberties)

@@ -214,6 +214,6 @@ def _request_action(agent, game_state, time_limit, conn):
     try:
         agent.get_action(game_state)
     except StopSearch:
-        print('stop search err: ', game_state.player())
+        # print('stop search err: ', game_state.player())
         pass
     conn.send(agent.context) # pass updated agent back to calling process

@@ -7,10 +7,17 @@ import random
 from datetime import datetime
 from time import time
 from copy import deepcopy
+from collections import namedtuple
+
+Entry = namedtuple('Entry', 'move depth value type')
+EntryAB = namedtuple('Entry', 'depth value type')
 
 logger = logging.getLogger(__name__)
 
-
+inf = 1000000
+epsilon = 0.001
+win_score = 10000
+lose_score = -10000
 class BasePlayer:
     def __init__(self, player_id):
         self.player_id = player_id
@@ -87,6 +94,11 @@ class AlphaBetaPlayer(BasePlayer):
           be suitable for using any other machine learning techniques.
     **********************************************************************
     """
+    def __init__(self, player_id):
+        super().__init__(player_id)
+        self.transposition_table = {}
+
+
     def get_action(self, state):
         """ Choose an action available in the current state
 
@@ -107,7 +119,33 @@ class AlphaBetaPlayer(BasePlayer):
         if state.ply_count < 2:
             self.queue.put(random.choice(state.actions()))
         else:
-            self.queue.put(self.alphabeta(state, depth=5))
+            self.transposition_table = {}
+            self.queue.put(self.iterative_deepeningTT(state, depth=5000))
+            # self.queue.put(self.iterative_deepening(state, depth=1000))
+
+    def iterative_deepening(self, state, depth=35, timelimit=300):
+        start = datetime.now()
+        # action = random.choice(state.actions())
+        action = None
+        for depth in range(1, depth):
+            action = self.alphabeta(state, depth)
+            self.queue.put(action)
+            if (datetime.now() - start).microseconds > timelimit * 1000:
+                print('break', depth)
+                break
+        return action
+
+    def iterative_deepeningTT(self, state, depth=100, timelimit=300):
+        start = datetime.now()
+        # action = random.choice(state.actions())
+        action = None
+        for depth in range(1, depth):
+            action = self.alphabetaTT(state, depth)
+            self.queue.put(action)
+            if (datetime.now() - start).microseconds > timelimit * 1000:
+                print('break', depth)
+                break
+        return action
 
     def alphabeta(self, state, depth):
 
@@ -143,12 +181,155 @@ class AlphaBetaPlayer(BasePlayer):
 
         return max(state.actions(), key=lambda x: min_value(state.result(x), alpha, beta, depth - 1))
 
+    def alphabetaTT(self, state, depth):
+
+
+        def min_value(state, alpha, beta, depth):
+            if state.terminal_test():
+                return state.utility(self.player_id)
+            if depth <= 0:
+                return self.score(state)
+
+            if state in self.transposition_table:
+                ttEntry = self.transposition_table[state]
+                if ttEntry.depth >= depth:
+                    if ttEntry.type == 'EXACT':
+                        return ttEntry.value
+                    # elif ttEntry.type == 'LOWER':
+                    #     alpha = max(alpha, ttEntry.value)
+                    elif ttEntry.type == 'UPPER':
+                        beta = min(beta, ttEntry.value)
+                    if alpha >= beta:
+                        return ttEntry.value
+
+            value = float("inf")
+            for action in state.actions():
+                value = min(value, max_value(state.result(action), alpha, beta, depth - 1))
+                if value <= alpha:
+                    return value
+                beta = min(beta, value)
+
+            entry = EntryAB(depth, value, 'UPPER')
+            self.transposition_table[state] = entry
+            return value
+
+        def max_value(state, alpha, beta, depth):
+            if state.terminal_test():
+                return state.utility(self.player_id)
+            if depth <= 0:
+                return self.score(state)
+
+            if state in self.transposition_table:
+                ttEntry = self.transposition_table[state]
+                if ttEntry.depth >= depth:
+                    if ttEntry.type == 'EXACT':
+                        return ttEntry.value
+                    elif ttEntry.type == 'LOWER':
+                        alpha = max(alpha, ttEntry.value)
+                    # elif ttEntry.type == 'UPPER':
+                    #     beta = min(beta, ttEntry.value)
+                    if alpha >= beta:
+                        return ttEntry.value
+
+            value = float("-inf")
+            for action in state.actions():
+                value = max(value, min_value(state.result(action), alpha, beta, depth - 1))
+                if value >= beta:
+                    return value
+                alpha = max(alpha, value)
+
+            entry = EntryAB(depth, value, 'LOWER')
+            self.transposition_table[state] = entry
+
+            return value
+
+        alpha = float("-inf")
+        beta = float("inf")
+
+
+        return max(state.actions(), key=lambda x: min_value(state.result(x), alpha, beta, depth - 1))
+
+    def negamaxTT(self, state, alpha, beta,  depth):
+        """TODO: DOESNT WORK"""
+        alphacopy = deepcopy(alpha)
+        stateorig = deepcopy(state)
+        # if state in self.transposition_table:
+        #     ttEntry = self.transposition_table[state]
+        #     if ttEntry.depth >= depth:
+        #         if ttEntry.type == 'EXACT':
+        #             return ttEntry.move, ttEntry.value
+        #         elif ttEntry.type == 'LOWER':
+        #             alpha = max(alpha, ttEntry.value)
+        #         elif ttEntry.type == 'UPPER':
+        #             beta = min(beta, ttEntry.value)
+        #         if alpha >= beta:
+        #             return ttEntry.move, ttEntry.value
+
+        if state.terminal_test():
+            return None, state.utility(self.player_id)
+        if depth <= 0:
+            return None, self.score(state)
+
+        best_value = -inf
+        best_action = None
+        for action in state.actions():
+            statecopy = deepcopy(state)
+            nextstate = statecopy.result(action)
+            # self.player_id =( self.player_id + 1) % 2
+            v = -1 * self.negamaxTT(nextstate, -beta, -alpha, depth - 1)[1]
+            best_value = max(best_value, v)
+            alpha = max(alpha, v)
+            if alpha >= beta:
+                best_action = action
+                if action not in stateorig.actions():
+                    print('invalid move?!', action)
+                return action, best_value
+                # break
+
+        if best_value <= alphacopy:
+            type = 'UPPER'
+        elif best_value >= beta:
+            type = 'LOWER'
+        else:
+            type = 'EXACT'
+
+        entry = Entry(best_action, depth, best_value, type)
+        # self.transposition_table[state] = entry
+
+        return best_action, best_value
+
+    def ind2xy(self, i):
+        return (i % 13, i // 13)
+
     def score(self, state):
+        if state.terminal_test():
+            if state.utility(self.player_id) > 0:
+                return win_score
+            elif state.utility(self.player_id) < 0:
+                return lose_score
+
         own_loc = state.locs[self.player_id]
         opp_loc = state.locs[1 - self.player_id]
         own_liberties = state.liberties(own_loc)
         opp_liberties = state.liberties(opp_loc)
         return len(own_liberties) - len(opp_liberties)
+
+    def score2(self, state):
+        if state.terminal_test():
+            if state.utility(self.player_id) > 0:
+                return win_score
+            elif state.utility(self.player_id) < 0:
+                return lose_score
+
+        own_loc = state.locs[self.player_id]
+        opp_loc = state.locs[1 - self.player_id]
+        own_loc_xy = self.ind2xy(own_loc)
+        opp_loc_xy = self.ind2xy(opp_loc)
+        manhattan_own = (10-own_loc_xy[0]) + (8 - own_loc_xy[1])
+        manhattan_opp = (10-opp_loc_xy[0]) + (8 - opp_loc_xy[1])
+        own_liberties = state.liberties(own_loc)
+        opp_liberties = state.liberties(opp_loc)
+        return len(own_liberties) -manhattan_own - len(opp_liberties) + manhattan_opp
 
 
 class MinimaxPlayer(BasePlayer):

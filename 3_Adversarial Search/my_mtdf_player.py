@@ -1,7 +1,7 @@
 import numpy as np
 import random
 from collections import namedtuple
-from sample_players import DataPlayer
+from sample_players import DataPlayer, BasePlayer
 from copy import deepcopy
 from datetime import datetime
 
@@ -13,7 +13,7 @@ win_score = 10000
 lose_score = -10000
 
 
-class MTDfPlayer(DataPlayer):
+class MTDfPlayer(BasePlayer):
     """ Implement an agent using any combination of techniques discussed
     in lecture (or that you find online on your own) that can beat
     sample_players.GreedyPlayer in >80% of "fair" matches (see tournament.py
@@ -30,10 +30,8 @@ class MTDfPlayer(DataPlayer):
     """
     def __init__(self, player_id):
         super().__init__(player_id)
-        print(player_id, 'my player id')
 
         self.transposition_table = {}
-        self.move = None
 
     def get_action(self, state):
         """ Choose an action available in the current state
@@ -55,8 +53,9 @@ class MTDfPlayer(DataPlayer):
         if state.ply_count < 2:
             self.queue.put(random.choice(state.actions()))
         else:
-            # self.queue.put(self.mtdf(state, 0, depth=4)[0])
-            self.queue.put(self.iterative_deepening(state, guess=0, depth=10, timelimit=1000))
+            self.iterative_deepening(state, depth=100000, timelimit=1000)
+            # self.queue.put(self.iterative_deepening(state, guess=0, depth=100000, timelimit=1000))
+
 
     def MT(self, state, gamma, depth, game_depth):
         """
@@ -68,102 +67,99 @@ class MTDfPlayer(DataPlayer):
         :return:
         """
         best_move = None
-        value = -inf
+        best_value = -inf
         upperbound = inf
         lowerbound = -inf
         if state in self.transposition_table and self.transposition_table[state].depth >= depth:
-            # print('yes')
-            if self.transposition_table[state].lowerbound > gamma:
-                if depth == game_depth:
-                    self.move = self.transposition_table[state].move
-                return self.transposition_table[state].lowerbound, self.transposition_table[state].move
-            if self.transposition_table[state].upperbound < gamma:
-                if depth == game_depth:
-                    self.move = self.transposition_table[state].move
-                return self.transposition_table[state].upperbound, self.transposition_table[state].move
+            ttLookup = self.transposition_table[state]
+            lowerbound = ttLookup.lowerbound
+            upperbound = ttLookup.upperbound
 
-        if state.terminal_test() or depth == 0:
-            lowerbound = upperbound = value = self.score(state)
+            if lowerbound > gamma:
+                if depth == game_depth:
+                    self.queue.put(ttLookup.move)
+                return lowerbound
+            if upperbound < gamma:
+                if depth == game_depth:
+                    self.queue.put(ttLookup.move)
+                return self.transposition_table[state].upperbound
+
+        if state.terminal_test() or (depth == 0):
+            score = self.score(state)
+
+            if score != 0:
+                score = (score - 0.99 * depth * abs(score) / score)
+            lowerbound = upperbound = best_value = score
+
         else:
             moves = state.actions()
             best_move = moves[0]
-            self.move = best_move
 
             for move in moves:
-                if value >= gamma:
+                if best_value >= gamma:
                     break
-                statecopy = deepcopy(state)
-                nextstate = statecopy.result(move)
+                nextstate = state.result(move)
 
-                # move_val =  1 * self.MT(nextstate, gamma, depth -1, game_depth )[0]
-                move_val =  -1 * self.MT(nextstate, -gamma, depth -1, game_depth )[0]
-                if value < move_val:
-                    value = move_val
+                move_val =  -1 * self.MT(nextstate, -gamma, depth -1, game_depth )
+                if best_value < move_val:
+                    best_value = move_val
                     best_move = move
 
-            if value < gamma:
-                upperbound = value
+            if best_value < gamma:
+                upperbound = best_value
             else:
                 if depth == game_depth:
-                    self.move = best_move
-                lowerbound = value
+                    self.queue.put(best_move)
+                lowerbound = best_value
 
-        if depth > 0 and not state.terminal_test():
-            entry = Entry(best_move, depth, value, state, upperbound, lowerbound)
+        if depth > 0 and not state.terminal_test() and best_move in state.actions():
+            entry = Entry(best_move, depth, best_value, state, upperbound, lowerbound)
             self.transposition_table[state] = entry
-
-        return value, best_move
+        # if best_move is not None:
+        #     self.queue.put(best_move)
+        return best_value
 
     def MTDriver(self, first, nextfunc, state, depth):
         upperbound = inf
         lowerbound = -inf
-        bound = value = first
+        bound = best_value = first
 
         while True:
-            bound = nextfunc(bound, value)
-            # print('bound', bound)
-            value, best_move = self.MT(state, bound - epsilon, depth, depth)
-            # depth = depth -1
-            # print(value, best_move, bound)
-            if value < bound:
-                upperbound = value
+            bound = nextfunc(lowerbound, upperbound, best_value)
+            best_value = self.MT(state, bound - epsilon, depth, depth)
+            if best_value < bound:
+                upperbound = best_value
             else:
-                lowerbound = value
+                lowerbound = best_value
             if lowerbound >= upperbound:
                 break
-        return value, best_move
+        return best_value
 
-    def MTDf(self, state, guess, depth):
-        def nextfunc(bound, guess):
-            # print('guess', guess)
-            # print('nextufn', bound)
-            if guess < bound:
-                return guess
-            else:
-                return guess + 1
+    def SSS(self, state, depth):
+        def nextfunc(lowerbound, upperbound, bestValue):
+            return bestValue
+        val = self.MTDriver(inf, nextfunc, state, depth)
+        return val
 
-        value, best_move = self.MTDriver(guess, nextfunc, state, depth)
+    # def MTDf(self, state, guess, depth):
+    #
+    #     first = win_score
+    #
+    #
+    #     self.alpha = self.MTDriver(state, first, nextfunc,depth)
+    #
+    #     return
 
-        return best_move, value
-
-    def iterative_deepening(self, state, guess=0, depth=35, timelimit=300):
-        guess = guess
+    def iterative_deepening(self, state, depth=5000, timelimit=300):
+        guess = 0
         start = datetime.now()
-        # action = random.choice(state.actions())
-        action = None
         for depth in range(1, depth):
-            a = datetime.now()
-            action, guess = self.MTDf(state, guess, depth)
-            self.queue.put(action)
-            # self.queue.put(self.move)
-            if not action:
-                print('action err!!')
-            # print((datetime.now() - a).microseconds / 1000)
-            # print('cf time', (datetime.now() - start).microseconds)
-            if (datetime.now() - start).microseconds > timelimit * 1000:
-                break
-        return action
+            guess = self.SSS(state, depth)
 
+            if (datetime.now() - start).microseconds > timelimit * 1000:
+                print(depth, 'break at')
+                break
+        return
 
 
     def score(self, state):

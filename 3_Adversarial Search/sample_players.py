@@ -125,7 +125,7 @@ class AlphaBetaPlayer(BasePlayer):
             # self.transposition_table = {}
 
             # self.queue.put(self.iterative_deepeningTT(state, depth=5000))
-            self.queue.put(self.iterative_deepening(state, depth=5000, timelimit=5000))
+            self.queue.put(self.iterative_deepening(state, depth=15000, timelimit=5000))
 
     # def iterative_deepening(self, state, depth=35, timelimit=300):
     #     start = datetime.now()
@@ -139,7 +139,7 @@ class AlphaBetaPlayer(BasePlayer):
     #             break
     #     return action
 
-    def iterative_deepening(self, state, depth=1000, timelimit=300):
+    def iterative_deepening(self, state, depth=15000000, timelimit=500):
         start = datetime.now()
         # action = random.choice(state.actions())
         action = None
@@ -149,13 +149,14 @@ class AlphaBetaPlayer(BasePlayer):
             bestmove = None
             tempscore = -inf
             for action in state.actions():
-                val = self.AlphaBetaSortedNodes(state.result(action), depth, alpha, beta,False)
+                val, tempAlpha = self.AlphaBetaSortedNodesV2(state.result(action), depth, alpha, beta,False)
                 if val > tempscore:
                     tempscore = val
                     bestmove = action
+                if tempAlpha > alpha:
+                    alpha = tempAlpha
             beta = tempscore
             self.queue.put(bestmove)
-
             if (datetime.now() - start).microseconds > timelimit * 1000:
                 print('break', depth)
                 break
@@ -305,72 +306,28 @@ class AlphaBetaPlayer(BasePlayer):
                     break  # alpha cut-off
             return v
 
-    def alphabetaTT_aspiration(self, state, depth, alpha = -inf, beta =inf):
-
-        def min_value(state, alpha, beta, depth):
-            if state.terminal_test():
-                return state.utility(self.player_id)
-            if depth <= 0:
-                return self.score(state)
-
-            if state in self.transposition_table:
-                ttEntry = self.transposition_table[state]
-                if ttEntry.depth >= depth:
-                    if ttEntry.type == 'EXACT':
-                        return ttEntry.value
-                    # elif ttEntry.type == 'LOWER':
-                    #     alpha = max(alpha, ttEntry.value)
-                    elif ttEntry.type == 'UPPER':
-                        beta = min(beta, ttEntry.value)
-                    if alpha >= beta:
-                        return ttEntry.value
-
-            value = float("inf")
-            for action in state.actions():
-                value = min(value, max_value(state.result(action), alpha, beta, depth - 1))
-                if value <= alpha:
-                    return value
-                beta = min(beta, value)
-
-            entry = EntryAB(depth, value, 'UPPER')
-            self.transposition_table[state] = entry
-            return value
-
-        def max_value(state, alpha, beta, depth):
-            if state.terminal_test():
-                return state.utility(self.player_id)
-            if depth <= 0:
-                return self.score2(state)
-
-            if state in self.transposition_table:
-                ttEntry = self.transposition_table[state]
-                if ttEntry.depth >= depth:
-                    if ttEntry.type == 'EXACT':
-                        return ttEntry.value
-                    elif ttEntry.type == 'LOWER':
-                        alpha = max(alpha, ttEntry.value)
-                    # elif ttEntry.type == 'UPPER':
-                    #     beta = min(beta, ttEntry.value)
-                    if alpha >= beta:
-                        return ttEntry.value
-
-            value = float("-inf")
-            for action in state.actions():
-                value = max(value, min_value(state.result(action), alpha, beta, depth - 1))
-                if value >= beta:
-                    return value
-                alpha = max(alpha, value)
-
-            entry = EntryAB(depth, value, 'LOWER')
-            self.transposition_table[state] = entry
-
-            return value
-
-        # alpha = float("-inf")
-        # beta = float("inf")
-
-
-        return max(state.actions(), key=lambda x: min_value(state.result(x), alpha, beta, depth - 1))
+    def AlphaBetaSortedNodesV2(self, state, depth, alpha, beta, maximizingPlayer):
+        if depth == 0 or state.terminal_test():
+            return self.score2(state), alpha
+        sortedStates = self.sort_states(state)
+        if maximizingPlayer:
+            v = -inf
+            for state in sortedStates:
+                tempval, _ = self.AlphaBetaSortedNodesV2(state, depth - 1, alpha, beta, False)
+                v = max(v, tempval)
+                alpha = max(alpha, v)
+                if beta <= alpha:
+                    break  # beta cut-off
+            return v, alpha
+        else:  # minimizingPlayer
+            v = inf
+            for state in sortedStates:
+                tempval, _ = self.AlphaBetaSortedNodesV2(state, depth - 1, alpha, beta, True)
+                v = min(v, tempval)
+                beta = min(beta, v)
+                if beta <= alpha:
+                    break  # alpha cut-off
+            return v, alpha
 
     def negascout(self, state, depth, alpha, beta, player_id):
         if state.terminal_test() or depth == 0:

@@ -19,7 +19,7 @@ from pvs_player import PVSPlayer
 logger = logging.getLogger(__name__)
 
 NUM_PROCS = 4
-NUM_ROUNDS = 20  # number times to replicate the match; increase for higher confidence estimate
+NUM_ROUNDS = 40  # number times to replicate the match; increase for higher confidence estimate
 TIME_LIMIT = 400  # number of milliseconds before timeout
 
 TEST_AGENTS = {
@@ -86,9 +86,9 @@ def play_matches(custom_agent, test_agent, cli_args):
 
 def main(args):
     test_agent = TEST_AGENTS[args.opponent.upper()]
-    # custom_agent = Agent(AlphaBetaPlayer, "AlphaBeta Agent")
+    custom_agent = Agent(AlphaBetaPlayer, "AlphaBeta Agent")
     # custom_agent = Agent(MTDfPlayer, "MTDF Agent")
-    custom_agent = Agent(PVSPlayer, "PVS Agent")
+    # custom_agent = Agent(PVSPlayer, "PVS Agent")
     # custom_agent = Age-nt(CustomPlayer, "Custom Agent")
     wins, num_games = play_matches(custom_agent, test_agent, args)
 

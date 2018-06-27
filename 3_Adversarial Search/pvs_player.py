@@ -89,25 +89,25 @@ class PVSPlayer(BasePlayer):
 
     def pvs(self, state, depth, alpha, beta, ply=1):
         if state.terminal_test():
-            return state.utility(self.player_id)
+            return [], state.utility(self.player_id)
         if depth <= 0:
-            return self.score_func(state)
+            return [], self.score_func(state)
 
         best_move = []
         best_value = alpha
 
         for idx, move in enumerate(state.actions()):
-            if idx == 0:
+            if idx == 0 or depth == 1 or (beta-alpha) == 1:
                 nextmoves, score = self.pvs(state.result(move), depth - 1,
-                                               -beta, -best_value, ply + 1)
+                                               -beta, -best_value, (ply + 1) %2)
             else:
-                nextmoves, score = self.pvs(state.result(move), depth - 1,
-                                            -best_value - 1, -best_value, ply + 1)
+                _, score = self.pvs(state.result(move), depth - 1,
+                                            -best_value - 1, -best_value, (ply + 1) %2)
 
                 score = -score
                 if score > best_value:
                     nextmoves, score = self.pvs(state.result(move), depth - 1,
-                                               -beta, -best_value, ply + 1)
+                                               -beta, -best_value, (ply + 1) %2)
                 else:
                     continue
 
@@ -115,7 +115,7 @@ class PVSPlayer(BasePlayer):
             if score > best_value:
                 best_value = score
                 best_move = [move] + nextmoves
-            elif not best_value:
+            elif not best_move:
                 best_move = [move] + nextmoves
 
             if best_value >= beta:

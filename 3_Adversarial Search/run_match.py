@@ -11,10 +11,10 @@ import textwrap
 from multiprocessing.pool import ThreadPool as Pool
 
 from isolation import Isolation, Agent, play
-from sample_players import RandomPlayer, GreedyPlayer, MinimaxPlayer, AlphaBetaPlayer#, AlphaBetaPlayerV2
-from my_mtdf_player import MTDfPlayer
-from pvs_player import PVSPlayer
-# from my_custom_player import CustomPlayer
+from sample_players import RandomPlayer, GreedyPlayer, MinimaxPlayer, AlphaBetaPlayer
+# from my_mtdf_player import MTDfPlayer
+# from pvs_player import PVSPlayer
+from my_custom_player import CustomPlayer
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ TEST_AGENTS = {
     "MINIMAX": Agent(MinimaxPlayer, "Minimax Agent"),
     "AlphaBeta": Agent(AlphaBetaPlayer, "AlphaBeta Agent"),
     # "SELF": Agent(AlphaBetaPlayer, "Custom TestAgent")
-    "SELF": Agent(MTDfPlayer, "Custom TestAgent")
+    "SELF": Agent(CustomPlayer, "Custom TestAgent")
 }
 
 
@@ -77,8 +77,8 @@ def play_matches(custom_agent, test_agent, cli_args):
     if cli_args.fair_matches:
         _matches = make_fair_matches(matches, results)
         results.extend(_run_matches(_matches, custom_agent.name, cli_args.processes))
-    # _matches = make_fair_matches(matches, results)
-    # results.extend(_run_matches(_matches, custom_agent.name, cli_args.processes))
+    _matches = make_fair_matches(matches, results)
+    results.extend(_run_matches(_matches, custom_agent.name, cli_args.processes))
 
     wins = sum(int(r[0].name == custom_agent.name) for r in results)
     return wins, len(matches) * (1 + int(cli_args.fair_matches))
@@ -86,10 +86,8 @@ def play_matches(custom_agent, test_agent, cli_args):
 
 def main(args):
     test_agent = TEST_AGENTS[args.opponent.upper()]
-    custom_agent = Agent(AlphaBetaPlayer, "AlphaBeta Agent")
-    # custom_agent = Agent(MTDfPlayer, "MTDF Agent")
-    # custom_agent = Agent(PVSPlayer, "PVS Agent")
-    # custom_agent = Age-nt(CustomPlayer, "Custom Agent")
+    # custom_agent = Agent(AlphaBetaPlayer, "AlphaBeta Agent")
+    custom_agent = Agent(CustomPlayer, "Custom Agent")
     wins, num_games = play_matches(custom_agent, test_agent, args)
 
     logger.info("Your agent won {:.1f}% of matches against {}".format(

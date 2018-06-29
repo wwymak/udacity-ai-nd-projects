@@ -96,7 +96,7 @@ class AlphaBetaPlayer(BasePlayer):
     def __init__(self, player_id):
         super().__init__(player_id)
         self.transposition_table = {}
-        self.score_func = self.score
+        self.score_func = self.score3
 
     def get_action(self, state):
         """ Choose an action available in the current state
@@ -125,19 +125,10 @@ class AlphaBetaPlayer(BasePlayer):
             # self.transposition_table = {}
 
             # self.queue.put(self.iterative_deepeningTT(state, depth=5000))
-            self.queue.put(self.iterative_deepening(state, depth=15000, timelimit=5000))
 
-    # def iterative_deepening(self, state, depth=35, timelimit=300):
-    #     start = datetime.now()
-    #     # action = random.choice(state.actions())
-    #     action = None
-    #     for depth in range(1, depth):
-    #         action = self.alphabeta(state, depth)
-    #         self.queue.put(action)
-    #         if (datetime.now() - start).microseconds > timelimit * 1000:
-    #             print('break', depth)
-    #             break
-    #     return action
+            # self.iterative_deepening(state, depth=15000, timelimit=5000)
+            self.iterative_deepeningTT(state, depth=15000, timelimit=5000)
+
 
     def iterative_deepening(self, state, depth=15000000, timelimit=500):
         start = datetime.now()
@@ -145,7 +136,11 @@ class AlphaBetaPlayer(BasePlayer):
         action = None
         alpha = -inf
         beta = inf
+        maxdepth = 0
+        f = open('./logs/maxdepth.txt', 'a')
         for depth in range(1, depth):
+            if depth > maxdepth:
+                maxdepth = depth
             bestmove = None
             tempscore = -inf
             for action in state.actions():
@@ -157,19 +152,24 @@ class AlphaBetaPlayer(BasePlayer):
                     alpha = tempAlpha
             beta = tempscore
             self.queue.put(bestmove)
+            f.write("{},{}\n".format(state.ply_count, maxdepth))
             if (datetime.now() - start).microseconds > timelimit * 1000:
                 print('break', depth)
                 break
         return action
 
     def iterative_deepeningTT(self, state, depth=1000, timelimit=300):
+        maxdepth = 0
+        f = open('./logs/maxdepth_alphabetaTT_score1.txt', 'a')
         start = datetime.now()
         # action = random.choice(state.actions())
         action = None
         for depth in range(1, depth):
-            action = self.alphabeta(state, depth)
-            # action = self.alphabetaTT(state, depth)
+            if depth > maxdepth:
+                maxdepth = depth
+            action = self.alphabetaTT(state, depth)
             self.queue.put(action)
+            f.write("{},{}\n".format(state.ply_count, maxdepth))
             if (datetime.now() - start).microseconds > timelimit * 1000:
                 print('break', depth)
                 break
@@ -308,7 +308,8 @@ class AlphaBetaPlayer(BasePlayer):
 
     def AlphaBetaSortedNodesV2(self, state, depth, alpha, beta, maximizingPlayer):
         if depth == 0 or state.terminal_test():
-            return self.score2(state), alpha
+            return self.score3(state, depth), alpha
+            # return self.score2(state), alpha
         sortedStates = self.sort_states(state)
         if maximizingPlayer:
             v = -inf
@@ -387,234 +388,7 @@ class AlphaBetaPlayer(BasePlayer):
         opp_liberties = state.liberties(opp_loc)
         return len(own_liberties) -manhattan_own - len(opp_liberties) + manhattan_opp
 
-
-class AlphaBetaPlayerMemory2(BasePlayer):
-    """ Implement an agent using any combination of techniques discussed
-    in lecture (or that you find online on your own) that can beat
-    sample_players.GreedyPlayer in >80% of "fair" matches (see tournament.py
-    or readme for definition of fair matches).
-
-    Implementing get_action() is the only required method, but you can add any
-    other methods you want to perform minimax/alpha-beta/monte-carlo tree search,
-    etc.
-
-    **********************************************************************
-    NOTE: The test cases will NOT be run on a machine with GPU access, or
-          be suitable for using any other machine learning techniques.
-    **********************************************************************
-    """
-    def __init__(self, player_id):
-        super().__init__(player_id)
-        self.transposition_table = {}
-        self.score_func = self.score
-
-    def get_action(self, state):
-        """ Choose an action available in the current state
-
-        See RandomPlayer and GreedyPlayer for examples.
-
-        This method must call self.queue.put(ACTION) at least once, and may
-        call it as many times as you want; the caller is responsible for
-        cutting off the function after the search time limit has expired.
-
-        **********************************************************************
-        NOTE: since the caller is responsible for cutting off search, calling
-              get_action() from your own code will create an infinite loop!
-              See (and use!) the Isolation.play() function to run games.
-        **********************************************************************
-        """
-        # randomly select a move as player 1 or 2 on an empty board, otherwise
-        # return the optimal minimax move at a fixed search depth of 3 plies
-        if state.ply_count < 2:
-            if 57 in state.actions():
-                self.queue.put(57)
-            else:
-                self.queue.put(random.choice(state.actions()))
-
-        else:
-            # self.transposition_table = {}
-
-            self.queue.put(self.iterative_deepeningTT(state, depth=5000))
-            # self.queue.put(self.iterative_deepening(state, depth=5000))
-
-    def iterative_deepening(self, state, depth=35, timelimit=300):
-        start = datetime.now()
-        # action = random.choice(state.actions())
-        action = None
-        for depth in range(1, depth):
-            action = self.alphabeta(state, depth)
-            self.queue.put(action)
-            if (datetime.now() - start).microseconds > timelimit * 1000:
-                print('break', depth)
-                break
-        return action
-
-    def iterative_deepeningTT(self, state, depth=100, timelimit=300):
-        start = datetime.now()
-        # action = random.choice(state.actions())
-        action = None
-        for depth in range(1, depth):
-            action = max(state.actions(), key=lambda x: self.alphabetaMemory(state.result(x), depth - 1, -inf, inf))
-            self.queue.put(action)
-            if (datetime.now() - start).microseconds > timelimit * 1000:
-                print('break', depth)
-                break
-        return action
-
-    def alphabeta(self, state, depth):
-
-
-        def min_value(state, alpha, beta, depth):
-            if state.terminal_test():
-                return state.utility(self.player_id)
-            if depth <= 0:
-                return self.score(state)
-            value = float("inf")
-            for action in state.actions():
-                value = min(value, max_value(state.result(action), alpha, beta, depth - 1))
-                if value <= alpha:
-                    return value
-                beta = min(beta, value)
-            return value
-
-        def max_value(state, alpha, beta, depth):
-            if state.terminal_test():
-                return state.utility(self.player_id)
-            if depth <= 0:
-                return self.score(state)
-            value = float("-inf")
-            for action in state.actions():
-                value = max(value, min_value(state.result(action), alpha, beta, depth - 1))
-                if value >= beta:
-                    return value
-                alpha = max(alpha, value)
-            return value
-
-        alpha = float("-inf")
-        beta = float("inf")
-
-        return max(state.actions(), key=lambda x: min_value(state.result(x), alpha, beta, depth - 1))
-
-    def alphabetaMemory(self, state, depth, alpha, beta):
-        best_value = -inf
-        best_move = None
-
-        if state in self.transposition_table:
-            ttEntry = self.transposition_table[state]
-            if ttEntry.depth >= depth:
-                if ttEntry.type == 'EXACT':
-                    return ttEntry.value
-                elif ttEntry.type == 'LOWER':
-                    alpha = max(alpha, ttEntry.value)
-                elif ttEntry.type == 'UPPER':
-                    beta = min(beta, ttEntry.value)
-                if alpha >= beta:
-                    return ttEntry.value
-
-        if state.terminal_test() or depth <= 0:
-            value = self.score2(state)
-            if value <= alpha:
-                entry = EntryAB(depth, best_value, 'LOWER')
-                self.transposition_table[state] = entry
-            elif value >= beta:
-                entry = EntryAB(depth, best_value, 'UPPER')
-                self.transposition_table[state] = entry
-            else:
-                entry = EntryAB(depth, best_value, 'EXACT')
-                self.transposition_table[state] = entry
-
-            return value
-
-
-        for action in state.actions():
-            nextstate = state.result(action)
-            value = self.alphabetaMemory(nextstate, depth -1, -beta, -alpha)
-            value = -value
-            if value > best_value:
-                best_value = value
-            if best_value >= beta:
-                break
-            if best_value > alpha:
-                alpha = best_value
-
-        if best_value <= alpha:
-            entry = EntryAB(depth, best_value, 'LOWER')
-            self.transposition_table[state] = entry
-        elif value >= beta:
-            entry = EntryAB(depth, best_value, 'UPPER')
-            self.transposition_table[state] = entry
-        else:
-            entry = EntryAB(depth, best_value, 'EXACT')
-            self.transposition_table[state] = entry
-
-        return best_value#, best_move
-
-    def negamaxTT(self, state, alpha, beta,  depth):
-        """TODO: DOESNT WORK"""
-        alphacopy = deepcopy(alpha)
-        stateorig = deepcopy(state)
-        # if state in self.transposition_table:
-        #     ttEntry = self.transposition_table[state]
-        #     if ttEntry.depth >= depth:
-        #         if ttEntry.type == 'EXACT':
-        #             return ttEntry.move, ttEntry.value
-        #         elif ttEntry.type == 'LOWER':
-        #             alpha = max(alpha, ttEntry.value)
-        #         elif ttEntry.type == 'UPPER':
-        #             beta = min(beta, ttEntry.value)
-        #         if alpha >= beta:
-        #             return ttEntry.move, ttEntry.value
-
-        if state.terminal_test():
-            return None, state.utility(self.player_id)
-        if depth <= 0:
-            return None, self.score(state)
-
-        best_value = -inf
-        best_action = None
-        for action in state.actions():
-            statecopy = deepcopy(state)
-            nextstate = statecopy.result(action)
-            # self.player_id =( self.player_id + 1) % 2
-            v = -1 * self.negamaxTT(nextstate, -beta, -alpha, depth - 1)[1]
-            best_value = max(best_value, v)
-            alpha = max(alpha, v)
-            if alpha >= beta:
-                best_action = action
-                if action not in stateorig.actions():
-                    print('invalid move?!', action)
-                return action, best_value
-                # break
-
-        if best_value <= alphacopy:
-            type = 'UPPER'
-        elif best_value >= beta:
-            type = 'LOWER'
-        else:
-            type = 'EXACT'
-
-        entry = Entry(best_action, depth, best_value, type)
-        # self.transposition_table[state] = entry
-
-        return best_action, best_value
-
-    def ind2xy(self, i):
-        return (i % 13, i // 13)
-
-    def score(self, state):
-        if state.terminal_test():
-            if state.utility(self.player_id) > 0:
-                return win_score
-            elif state.utility(self.player_id) < 0:
-                return lose_score
-
-        own_loc = state.locs[self.player_id]
-        opp_loc = state.locs[1 - self.player_id]
-        own_liberties = state.liberties(own_loc)
-        opp_liberties = state.liberties(opp_loc)
-        return len(own_liberties) - len(opp_liberties)
-
-    def score2(self, state):
+    def score3(self, state, depth):
         if state.terminal_test():
             if state.utility(self.player_id) > 0:
                 return win_score
@@ -629,7 +403,8 @@ class AlphaBetaPlayerMemory2(BasePlayer):
         manhattan_opp = abs(5-opp_loc_xy[0]) + abs(4 - opp_loc_xy[1])
         own_liberties = state.liberties(own_loc)
         opp_liberties = state.liberties(opp_loc)
-        return len(own_liberties) -manhattan_own - len(opp_liberties) + manhattan_opp
+        return (len(own_liberties) - len(opp_liberties) -manhattan_own  + manhattan_opp) * pow(0.8, depth-1)
+
 
 
 class MinimaxPlayer(BasePlayer):

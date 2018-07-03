@@ -1,16 +1,23 @@
 import numpy as np
-import random
 from sample_players import DataPlayer, BasePlayer
+import logging
+import random
 from datetime import datetime
+from copy import deepcopy
+from collections import namedtuple
 
-VALID_MOVES_PER_NODE = 8
-UCT_CONST = 1.4
+Entry = namedtuple('Entry', 'move depth value type')
+EntryAB = namedtuple('Entry', 'depth value type')
+
+logger = logging.getLogger(__name__)
+
 
 inf = 1000000
 epsilon = 0.001
 win_score = 10000
 lose_score = -10000
 
+score3_pow = 2.5
 
 class CustomPlayer1(DataPlayer):
     def get_action(self, state):
@@ -135,6 +142,8 @@ class CustomPlayer(BasePlayer):
         super().__init__(player_id)
         self.transposition_table = {}
         self.score_func = self.score3
+        self.f = open('./logs2/maxdepth_ab_sortedNodes_score1.txt', 'a')
+
 
     def get_action(self, state):
         """ Choose an action available in the current state
@@ -160,20 +169,14 @@ class CustomPlayer(BasePlayer):
                 self.queue.put(random.choice(state.actions()))
 
         else:
-            # self.transposition_table = {}
-
-            # self.queue.put(self.iterative_deepeningTT(state, depth=5000))
-
-            self.iterative_deepening(state, depth=15000, timelimit=5000)
+            self.iterative_deepening(state)
 
     def iterative_deepening(self, state, depth=15000000, timelimit=500):
         start = datetime.now()
-        # action = random.choice(state.actions())
         action = None
         alpha = -inf
         beta = inf
         maxdepth = 0
-        f = open('./logs/maxdepth_AB_sortedNodes_score1.txt', 'a')
         for depth in range(1, depth):
             if depth > maxdepth:
                 maxdepth = depth
@@ -188,7 +191,8 @@ class CustomPlayer(BasePlayer):
                     alpha = tempAlpha
             beta = tempscore
             self.queue.put(bestmove)
-            f.write("{},{}\n".format(state.ply_count, maxdepth))
+            self.f.write("{},{},{},{},{}\n".format(state.ply_count, maxdepth, state.terminal_test(), state.player(), self.player_id))
+
             if (datetime.now() - start).microseconds > timelimit * 1000:
                 print('break', depth)
                 break
@@ -199,8 +203,8 @@ class CustomPlayer(BasePlayer):
         # action = random.choice(state.actions())
         action = None
         for depth in range(1, depth):
-            # action = self.alphabeta(state, depth)
-            action = self.alphabetaTT(state, depth)
+            action = self.alphabeta(state, depth)
+            # action = self.alphabetaTT(state, depth)
             self.queue.put(action)
             if (datetime.now() - start).microseconds > timelimit * 1000:
                 print('break', depth)
@@ -254,8 +258,6 @@ class CustomPlayer(BasePlayer):
                 if ttEntry.depth >= depth:
                     if ttEntry.type == 'EXACT':
                         return ttEntry.value
-                    # elif ttEntry.type == 'LOWER':
-                    #     alpha = max(alpha, ttEntry.value)
                     elif ttEntry.type == 'UPPER':
                         beta = min(beta, ttEntry.value)
                     if alpha >= beta:
@@ -317,31 +319,13 @@ class CustomPlayer(BasePlayer):
         sortedNodes = [node[0] for node in sortedNodes]
         return sortedNodes
 
-    def AlphaBetaSortedNodes(self, state, depth, alpha, beta, maximizingPlayer):
-        if depth == 0 or state.terminal_test():
-            return self.score2(state)
-        sortedStates = self.sort_states(state)
-        if maximizingPlayer:
-            v = -inf
-            for state in sortedStates:
-                v = max(v, self.AlphaBetaSortedNodes(state, depth - 1, alpha, beta, False))
-                alpha = max(alpha, v)
-                if beta <= alpha:
-                    break  # beta cut-off
-            return v
-        else:  # minimizingPlayer
-            v = inf
-            for state in sortedStates:
-                v = min(v, self.AlphaBetaSortedNodes(state, depth - 1, alpha, beta, True))
-                beta = min(beta, v)
-                if beta <= alpha:
-                    break  # alpha cut-off
-            return v
-
     def AlphaBetaSortedNodesV2(self, state, depth, alpha, beta, maximizingPlayer):
+        if state.terminal_test():
+            self.f.write("{},{},{},{},{}\n".format(state.ply_count, depth, state.terminal_test(),
+                                                   state.player(), self.player_id))
         if depth == 0 or state.terminal_test():
-            # return self.score3(state, depth), alpha
             return self.score(state), alpha
+
         sortedStates = self.sort_states(state)
         if maximizingPlayer:
             v = -inf
@@ -362,33 +346,47 @@ class CustomPlayer(BasePlayer):
                     break  # alpha cut-off
             return v, alpha
 
-    def negascout(self, state, depth, alpha, beta, player_id):
-        if state.terminal_test() or depth == 0:
-            evalute = self.score(state)
-            # if state.player() != player_id:
-            #     return -evalute, None
-            # else:
-            return evalute, None
-        player = deepcopy(player_id)
-        best_action = state.actions()[0]
-        for idx, action in enumerate(state.actions()):
+    def AlphaBetaSortedNodesTT(self, state, depth, alpha, beta, maximizingPlayer):
+        if state.terminal_test():
+            self.f.write("{},{},{},{},{}\n".format(state.ply_count, depth, state.terminal_test(),
+                                                   state.player(), self.player_id))
+        if depth == 0 or state.terminal_test():
+            return self.score(state), alpha
 
-            curr_player =( player + 1 )% 2
-            if idx == 0:
-                print('here', self.negascout(state.result(action), depth -1, -beta, -alpha, curr_player))
-                alpha, _ = self.negascout(state.result(action), depth -1, -beta, -alpha, curr_player)
-            else:
-                alpha, _ = self.negascout(state.result(action), depth -1, -alpha-1, -alpha, curr_player)
-            score = -score
-            print(score)
-            alpha = max(alpha, score)
-            if alpha >= beta:
-                best_action = action
-                break
-        return alpha, best_action
+        if state in self.transposition_table:
+            ttEntry = self.transposition_table[state]
+            if ttEntry.depth >= depth:
+                if ttEntry.type == 'EXACT':
+                    return ttEntry.value
+                elif ttEntry.type == 'LOWER':
+                    alpha = max(alpha, ttEntry.value)
+                elif ttEntry.type == 'UPPER':
+                    beta = min(beta, ttEntry.value)
+                if alpha >= beta:
+                    return ttEntry.value
+
+        sortedStates = self.sort_states(state)
+        if maximizingPlayer:
+            v = -inf
+            for state in sortedStates:
+                tempval, _ = self.AlphaBetaSortedNodesV2(state, depth - 1, alpha, beta, False)
+                v = max(v, tempval)
+                alpha = max(alpha, v)
+                if beta <= alpha:
+                    break  # beta cut-off
+            return v, alpha
+        else:  # minimizingPlayer
+            v = inf
+            for state in sortedStates:
+                tempval, _ = self.AlphaBetaSortedNodesV2(state, depth - 1, alpha, beta, True)
+                v = min(v, tempval)
+                beta = min(beta, v)
+                if beta <= alpha:
+                    break  # alpha cut-off
+            return v, alpha
 
     def ind2xy(self, i):
-        return (i % 13, i // 13)
+        return i % 13, i // 13
 
     def score(self, state):
         if state.terminal_test():
@@ -435,4 +433,5 @@ class CustomPlayer(BasePlayer):
         manhattan_opp = abs(5-opp_loc_xy[0]) + abs(4 - opp_loc_xy[1])
         own_liberties = state.liberties(own_loc)
         opp_liberties = state.liberties(opp_loc)
-        return (len(own_liberties) - len(opp_liberties) -manhattan_own  + manhattan_opp) * pow(0.8, depth-1)
+        return (len(own_liberties) - len(opp_liberties) -manhattan_own  + manhattan_opp) * pow(score3_pow, depth-1)
+

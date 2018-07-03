@@ -83,18 +83,6 @@ class PVSPlayer(BasePlayer):
                 break
         return action
 
-    # def iterative_deepeningTT(self, state, depth=1000, timelimit=300):
-    #     start = datetime.now()
-    #     # action = random.choice(state.actions())
-    #     action = None
-    #     for depth in range(1, depth):
-    #         action = self.alphabeta(state, depth)
-    #         # action = self.alphabetaTT(state, depth)
-    #         self.queue.put(action)
-    #         if (datetime.now() - start).microseconds > timelimit * 1000:
-    #             print('break', depth)
-    #             break
-    #     return action
 
     def sort_states(self,state):
         sortedNodes = []
@@ -112,8 +100,23 @@ class PVSPlayer(BasePlayer):
                 return score
             else:
                 return -score
+        # b = copy(beta)
+        b =beta
+        bestscore = -inf
+
         sortedNodes = self.sort_states(state)
         firstChild = True
+        for state in sortedNodes:
+            score = -self.negascout(state, -b, -alpha, depth -1, not maximizingPlayer)
+            if(score > alpha and score < beta and not firstChild):
+                score = -self.negascout(state, -beta, -score, depth -1, not maximizingPlayer)
+            bestscore = max(bestscore, score)
+            alpha = max(alpha, score)
+            if alpha >= beta:
+                return alpha
+            b = alpha + 1
+        return bestscore
+
         for state in sortedNodes:
             if not firstChild:
                 score = -self.negascout(state, depth - 1, -alpha - 1, -alpha, False)
@@ -127,50 +130,6 @@ class PVSPlayer(BasePlayer):
                 break
         return alpha
 
-    def AlphaBetaSortedNodes(self, state, depth, alpha, beta, maximizingPlayer):
-        if depth == 0 or state.terminal_test():
-            return self.score2(state)
-        sortedStates = self.sort_states(state)
-        if maximizingPlayer:
-            v = -inf
-            for state in sortedStates:
-                v = max(v, self.AlphaBetaSortedNodes(state, depth - 1, alpha, beta, False))
-                alpha = max(alpha, v)
-                if beta <= alpha:
-                    break  # beta cut-off
-            return v
-        else:  # minimizingPlayer
-            v = inf
-            for state in sortedStates:
-                v = min(v, self.AlphaBetaSortedNodes(state, depth - 1, alpha, beta, True))
-                beta = min(beta, v)
-                if beta <= alpha:
-                    break  # alpha cut-off
-            return v
-
-    def AlphaBetaSortedNodesV2(self, state, depth, alpha, beta, maximizingPlayer):
-        if depth == 0 or state.terminal_test():
-            return self.score3(state, depth), alpha
-            # return self.score2(state), alpha
-        sortedStates = self.sort_states(state)
-        if maximizingPlayer:
-            v = -inf
-            for state in sortedStates:
-                tempval, _ = self.AlphaBetaSortedNodesV2(state, depth - 1, alpha, beta, False)
-                v = max(v, tempval)
-                alpha = max(alpha, v)
-                if beta <= alpha:
-                    break  # beta cut-off
-            return v, alpha
-        else:  # minimizingPlayer
-            v = inf
-            for state in sortedStates:
-                tempval, _ = self.AlphaBetaSortedNodesV2(state, depth - 1, alpha, beta, True)
-                v = min(v, tempval)
-                beta = min(beta, v)
-                if beta <= alpha:
-                    break  # alpha cut-off
-            return v, alpha
 
 
     def ind2xy(self, i):

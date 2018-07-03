@@ -18,9 +18,9 @@ from my_custom_player import CustomPlayer
 
 logger = logging.getLogger(__name__)
 
-NUM_PROCS = 4
-NUM_ROUNDS = 40  # number times to replicate the match; increase for higher confidence estimate
-TIME_LIMIT = 400  # number of milliseconds before timeout
+NUM_PROCS = 3
+NUM_ROUNDS = 50  # number times to replicate the match; increase for higher confidence estimate
+TIME_LIMIT = 200  # number of milliseconds before timeout
 
 TEST_AGENTS = {
     "RANDOM": Agent(RandomPlayer, "Random Agent"),
@@ -77,8 +77,6 @@ def play_matches(custom_agent, test_agent, cli_args):
     if cli_args.fair_matches:
         _matches = make_fair_matches(matches, results)
         results.extend(_run_matches(_matches, custom_agent.name, cli_args.processes))
-    _matches = make_fair_matches(matches, results)
-    results.extend(_run_matches(_matches, custom_agent.name, cli_args.processes))
 
     wins = sum(int(r[0].name == custom_agent.name) for r in results)
     return wins, len(matches) * (1 + int(cli_args.fair_matches))
@@ -86,8 +84,8 @@ def play_matches(custom_agent, test_agent, cli_args):
 
 def main(args):
     test_agent = TEST_AGENTS[args.opponent.upper()]
-    # custom_agent = Agent(AlphaBetaPlayer, "AlphaBeta Agent")
-    custom_agent = Agent(CustomPlayer, "Custom Agent")
+    custom_agent = Agent(AlphaBetaPlayer, "AlphaBeta Agent")
+    # custom_agent = Agent(CustomPlayer, "Custom Agent")
     wins, num_games = play_matches(custom_agent, test_agent, args)
 
     logger.info("Your agent won {:.1f}% of matches against {}".format(

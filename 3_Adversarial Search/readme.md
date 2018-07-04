@@ -39,6 +39,10 @@ seems to more or less saturate)
 | ------------- |-------------:| -----:|-------------:|-------------:|
 | my_moves - opp_moves  | alpha-beta | 100 | 200ms| 75%|
 | my_moves - opp_moves + manhattan_opponent - manhattan_own| alpha-beta | 100 | 200ms| 87%|
+| (my_moves - opp_moves + manhattan_opponent - manhattan_own) * 5.0 ^ depth| alpha-beta | 100 | 200ms| 90%|
 | (my_moves - opp_moves + manhattan_opponent - manhattan_own) * 2.5 ^ depth| alpha-beta | 100 | 200ms| 77%|
+| (my_moves - opp_moves + manhattan_opponent - manhattan_own) * 0.85 ^ depth| alpha-beta | 100 | 200ms| 84%|
+| (my_moves - opp_moves + manhattan_opponent - manhattan_own) * 0.5 ^ depth| alpha-beta | 100 | 200ms| 85%|
+| (my_moves - opp_moves + manhattan_opponent - manhattan_own) * 0.25 ^ depth| alpha-beta | 100 | 200ms| 77%|
 
  

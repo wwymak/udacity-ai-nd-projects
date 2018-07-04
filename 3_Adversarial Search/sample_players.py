@@ -18,7 +18,7 @@ epsilon = 0.001
 win_score = 10000
 lose_score = -10000
 
-score3_pow = 0.5
+score3_pow = 5.0
 class BasePlayer:
     def __init__(self, player_id):
         self.player_id = player_id

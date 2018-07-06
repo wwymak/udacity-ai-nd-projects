@@ -27,7 +27,6 @@ TEST_AGENTS = {
     "GREEDY": Agent(GreedyPlayer, "Greedy Agent"),
     "MINIMAX": Agent(MinimaxPlayer, "Minimax Agent"),
     "AlphaBeta": Agent(AlphaBetaPlayer, "AlphaBeta Agent"),
-    # "SELF": Agent(AlphaBetaPlayer, "Custom TestAgent")
     "SELF": Agent(CustomPlayer, "Custom TestAgent")
 }
 

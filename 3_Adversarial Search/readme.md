@@ -7,7 +7,7 @@
 Minimax is an algorithm for 'zero sum games', where at each step of the game, the agent tries to minimize the 
 worst possible loss. In minimax, all the nodes of the tree is searched, thus it is not a very effective
 algorithm to use in practice. Instead, there are more advanced variations that limit how many nodes are
-searched, such as alpha beta pruning, principal variation search, MTD(f), etc. 
+searched, such as alpha beta pruning, principal variation search, [MTDF](https://people.csail.mit.edu/plaat/mtdf.html), etc. 
 
 In this project, I added iterative deepening (ie, the agent progressive search to greater depths in order to 
 make use of all the available time and not run into a time limit) and also experimented with the alpha-beta agent with transposition table, and also
@@ -20,7 +20,9 @@ in the alpha beta search, it doesn't matter so much how the state is reached, bu
 that state. By saving the 'best' values it has obtained in the search so far, the nodes agent will rerun a search on 
 is much less and the agent should be more efficient.
 
-Node sorting-- in one version of the alpha beta 
+Node sorting -- in certain experiments, I also order the nodes at each depth depending on the scoring at at each depth. 
+Since alpha beta pruning picks the 'best' nodes in terms of the heuristic score, by node sorting, it should help in 
+making a more efficient agent. 
 
 #### Heuristic function
 I decided to implement a custom heuristic function based on the baseline
@@ -76,9 +78,13 @@ seems to more or less saturate)
  |sorting + transposition table |55626|
  |no sorting + transposition table | 20905|
  |no sorting, no transposition table|5108|
- #### Further work
- It would be interesting to explore further how different algorithms do against each other, especially algorithms such 
- as Monte Carlo tree search together with a neural network, as well as even more efficient forms of minimax such as 
- NegaScout, [MTDF](https://people.csail.mit.edu/plaat/mtdf.html)
+ 
+ We can see that the sorting and the transposition table defintely made a significant difference in the amount of pruning.
+ The win rates of all three combinations are more or less the same-- around 80% over the basic minimax agent. We can see that 
+ the extra search efficiency did not come at a cost to the move quality. 
+
+### Implementation
+There is one full implementation of the agent with tranposition table + node sorting in [my_custom_player.py](https://github.com/wwymak/udacity-ai-nd-projects/blob/master/3_Adversarial%20Search/my_custom_player.py)
+Most of the other experiments around adding sorting etc are done in the [sample_players.py](https://github.com/wwymak/udacity-ai-nd-projects/blob/master/3_Adversarial%20Search/sample_players.py) file
  
  

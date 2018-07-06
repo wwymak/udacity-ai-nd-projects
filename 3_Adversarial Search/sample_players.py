@@ -98,8 +98,9 @@ class AlphaBetaPlayer(BasePlayer):
     def __init__(self, player_id):
         super().__init__(player_id)
         self.transposition_table = {}
-        self.score_func = self.score3
-        self.f = open('./logs3_heuristic2/maxdepth_alphabeta_score3_depth.txt', 'a')
+        self.score_func = self.score2
+        self.f = open('./logs3_heuristic2/maxdepth_alphabetaV2TT_score2_sort_noTT2.txt', 'a')
+        self.f2 = open('./matches_cutoffs/maxdepth_alphabetaV2TT_score2_sort_noTT.txt', 'a')
 
     def get_action(self, state):
         """ Choose an action available in the current state
@@ -126,8 +127,8 @@ class AlphaBetaPlayer(BasePlayer):
 
         else:
             # self.iterative_deepening(state, depth=15000, timelimit=5000)
-            # self.iterative_deepening_ABV2(state)
-            self.iterative_deepeningTT(state, depth=15000, timelimit=5000)
+            self.iterative_deepening_ABV2(state)
+            # self.iterative_deepeningTT(state, depth=15000, timelimit=5000)
 
     def iterative_deepening_ABV2(self, state, depth=15000000, timelimit=500):
         start = datetime.now()
@@ -136,7 +137,6 @@ class AlphaBetaPlayer(BasePlayer):
         alpha = -inf
         beta = inf
         maxdepth = 0
-        # f = open('./logs/maxdepth.txt', 'a')
         for depth in range(1, depth):
             if depth > maxdepth:
                 maxdepth = depth
@@ -311,12 +311,13 @@ class AlphaBetaPlayer(BasePlayer):
 
         return max(state.actions(), key=lambda x: min_value(state.result(x), alpha, beta, depth - 1))
 
-    def sort_states(self,state, depth):
+    def sort_states(self,state, depth, should_sort=True):
         sortedNodes = []
         for action in state.actions():
             nextstate = state.result(action)
-            sortedNodes.append((nextstate, action, self.score4(nextstate, depth)))
-        sortedNodes = sorted(sortedNodes, key=lambda node: node[2], reverse=True)
+            sortedNodes.append((nextstate, action, self.score_func(nextstate, depth)))
+        if should_sort:
+            sortedNodes = sorted(sortedNodes, key=lambda node: node[2], reverse=True)
         sortedNodes = [node[0] for node in sortedNodes]
         return sortedNodes
 
@@ -343,9 +344,9 @@ class AlphaBetaPlayer(BasePlayer):
 
     def AlphaBetaSortedNodesV2(self, state, depth, alpha, beta, maximizingPlayer):
         if depth == 0 or state.terminal_test():
-            return self.score3(state, depth), alpha
+            return self.score_func(state, depth), alpha
             # return self.score2(state), alpha
-        sortedStates = self.sort_states(state, depth)
+        sortedStates = self.sort_states(state, depth, False)
         if maximizingPlayer:
             v = -inf
             for state in sortedStates:
@@ -366,25 +367,31 @@ class AlphaBetaPlayer(BasePlayer):
             return v, alpha
 
     def AlphaBetaSortedNodesTT(self, state, depth, alpha, beta, maximizingPlayer):
-        sortedStates = self.sort_states(state, depth)
+        sortedStates = self.sort_states(state, depth, True)
 
-        if state in self.transposition_table:
-            ttEntry = self.transposition_table[state]
-            if ttEntry.depth >= depth:
-                if ttEntry.type == 'EXACT':
-                    return ttEntry.value
-                elif ttEntry.type == 'LOWER' and not maximizingPlayer:
-                    alpha = max(alpha, ttEntry.value)
-                elif ttEntry.type == 'UPPER' and maximizingPlayer:
-                    beta = min(beta, ttEntry.value)
-                if alpha >= beta:
-                    return ttEntry.value
+        # if state in self.transposition_table:
+        #     ttEntry = self.transposition_table[state]
+        #     if ttEntry.depth >= depth:
+        #         if ttEntry.type == 'EXACT':
+        #             self.f2.write(
+        #                 "{},{},{},{},{},{}\n".format(state.ply_count, depth, state.terminal_test(), state.player(),
+        #                                           self.player_id, 'EXACT'))
+        #             return ttEntry.value
+        #         elif ttEntry.type == 'LOWER' and not maximizingPlayer:
+        #             alpha = max(alpha, ttEntry.value)
+        #         elif ttEntry.type == 'UPPER' and maximizingPlayer:
+        #             beta = min(beta, ttEntry.value)
+        #         if alpha >= beta:
+        #             self.f2.write(
+        #                 "{},{},{},{},{},{}\n".format(state.ply_count, depth, state.terminal_test(), state.player(),
+        #                                              self.player_id, 'TTbeta'))
+        #             return ttEntry.value
         if state.terminal_test():
             self.f.write("{},{},{},{},{}\n".format(state.ply_count, depth, state.terminal_test(), state.player(),
                                                    self.player_id))
 
         if depth == 0 or state.terminal_test():
-            return self.score4(state, depth)
+            return self.score_func(state, depth)
             # return self.score2(state), alpha
         if maximizingPlayer:
             v = -inf
@@ -393,6 +400,9 @@ class AlphaBetaPlayer(BasePlayer):
                 v = max(v, tempval)
                 alpha = max(alpha, v)
                 if beta <= alpha:
+                    self.f2.write(
+                        "{},{},{},{},{},{}\n".format(state.ply_count, depth, state.terminal_test(), state.player(),
+                                                     self.player_id, 'beta'))
                     break  # beta cut-off
 
             # return v, alpha
@@ -403,6 +413,9 @@ class AlphaBetaPlayer(BasePlayer):
                 v = min(v, tempval)
                 beta = min(beta, v)
                 if beta <= alpha:
+                    self.f2.write(
+                        "{},{},{},{},{},{}\n".format(state.ply_count, depth, state.terminal_test(), state.player(),
+                                                     self.player_id, 'alpha'))
                     break  # alpha cut-off
             # return v, alpha
 

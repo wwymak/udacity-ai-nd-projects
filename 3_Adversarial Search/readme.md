@@ -27,12 +27,16 @@ I decided to implement a custom heuristic function based on the baseline
 `availabe_my_moves - available_opponent_moves` heuristic. I added in 
 an extra param to minimize the manhattan distance for my agent while maximizing the 
 manhattan distance to the adversary-- this is implemented by adding in the 
-`manhattan_opponent - manhattan_own` to the base heuristic. In addition, I also
+`manhattan_opponent - manhattan_own` to the base heuristic. Since the probability of having more
+available moves is greater the closer the player is to the board center, you would want to 
+minimize your distance from it while maximising your opponent's.
+
+In addition, I also
 expect the depth at which the cost function is evaluated will have 
 an effect-- a higher depth means the further in the future the agent searches. In one 
 experiment, I multipled my custom heuristic score by `x ^ depth` where x is varied. I expected
 that x would have a optimal value just below 1 (so deeper depths are less important) for the 
-agent to win. Surprisingly, it is the other way round, with to optimal x value around 2. (and afterwards the win rates
+agent to win. Surprisingly, it is the other way round, with the agent winning more for x > 1. (and afterwards the win rates
 seems to more or less saturate)
 
 | Scoring        | Agent           | games  | time limit| win rate|
@@ -45,4 +49,36 @@ seems to more or less saturate)
 | (my_moves - opp_moves + manhattan_opponent - manhattan_own) * 0.5 ^ depth| alpha-beta | 100 | 200ms| 85%|
 | (my_moves - opp_moves + manhattan_opponent - manhattan_own) * 0.25 ^ depth| alpha-beta | 100 | 200ms| 77%|
 
+ #### Efficiency
+ As a measure of how efficient the agent is at searching, I investigated the maximum depth at different play counts 
+ by the different variations of the alphabeta agent -- both with and without node ordering, and with and without the transposition table.
+ 
+ The time limit used is 200ms, 100 games for the below (ply count, naxdepths are slightly approximated, since in 
+ my experiments the maxdepth is shared by different ply counts):
+ 
+ | Agent| ply_count           | maxdepth  |  win rate|
+ |------|-------------:|-------------:|-------------:|
+ |transposition table + node sorting|70|500|77%|
+ |transposition table|60|750|82%|
+ |node sorting|70|500|80%|
+ |no transposition table , no node sorting|70|500|79%|
+ 
+ While there is no significant difference in win rates between the different schemes, the tranposition table definitely 
+ helped the agent in searching to deeper depths as it does not need to re-search a large number of nodes.
+ 
+ In addition, I also investigated the number of alpha/beta cutoffs using the combination of node sorting/transposition table
+ The basic alpha beta alorithm is more efficient than just minimax since it prunes branches that are definitely not going
+ to have a higher/less value than the current highest/lowest node in that depth. The more branch pruning that occur, the
+ more efficient the search is. Over 500 games each, the results are :
+ 
+ |Type  |cutoffs |
+ |------|-------------:|
+ |sorting + transposition table |55626|
+ |no sorting + transposition table | 20905|
+ |no sorting, no transposition table|5108|
+ #### Further work
+ It would be interesting to explore further how different algorithms do against each other, especially algorithms such 
+ as Monte Carlo tree search together with a neural network, as well as even more efficient forms of minimax such as 
+ NegaScout, [MTDF](https://people.csail.mit.edu/plaat/mtdf.html)
+ 
  

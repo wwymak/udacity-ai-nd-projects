@@ -1,8 +1,5 @@
 ## Adversarial Game Playing Agent for knights isolation
 
-#### Isolation
-
-
 #### Minimax agents and variations
 Minimax is an algorithm for 'zero sum games', where at each step of the game, the agent tries to minimize the 
 worst possible loss. In minimax, all the nodes of the tree is searched, thus it is not a very effective

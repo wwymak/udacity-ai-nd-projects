@@ -48,6 +48,34 @@ seems to more or less saturate)
 | (my_moves - opp_moves + manhattan_opponent - manhattan_own) * 0.5 ^ depth| alpha-beta | 100 | 200ms| 85%|
 | (my_moves - opp_moves + manhattan_opponent - manhattan_own) * 0.25 ^ depth| alpha-beta | 100 | 200ms| 77%|
 
+In terms of efficiency of the 3 different heuristic functions, I also ran an experiment for the max depth
+explored:
+
+For my custom agent with node sorting, transposition table and 200ms time limit, the depths reached are:
+
+|Scoring| ply_count   | maxdepth  |  
+|-------------|-------------:|-------------:|
+|my_moves - opp_moves| 77| 1000|
+| my_moves - opp_moves + manhattan_opponent - manhattan_own| 65|670|
+| (my_moves - opp_moves + manhattan_opponent - manhattan_own) * 5.0 ^ depth|55|503|
+
+To further isolate the effects of the heuristic from the effects of node sorting/tt table, I also checked 
+the depths for a simple alphabeta agent (running on time limit of 400ms in this case):
+|Scoring| ply_count   | maxdepth  |  
+|-------------|-------------:|-------------:|
+|my_moves - opp_moves| 60| 1938|
+| my_moves - opp_moves + manhattan_opponent - manhattan_own| 53|1704|
+| (my_moves - opp_moves + manhattan_opponent - manhattan_own) * 5.0 ^ depth|60|100|
+
+We can see that as the complexity of the heuristic increases, the depths that the agent can explore decreases.
+If speed is of the essence, then the simplest heuristic is the best choice even at the expense of accuracy. 
+However, all 3 of the above heuristics are really simple numerical operations so I do not see any potential 
+issues in using the more complex issues unless the time limit is extremely short
+
+
+
+ 
+
  #### Efficiency
  As a measure of how efficient the agent is at searching, I investigated the maximum depth at different play counts 
  by the different variations of the alphabeta agent -- both with and without node ordering, and with and without the transposition table.
